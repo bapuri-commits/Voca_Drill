@@ -1,0 +1,39 @@
+---
+description: Voca_Drill 프로젝트 규칙 — 항상 적용
+alwaysApply: true
+---
+
+# Voca_Drill 프로젝트 규칙
+
+## 프로젝트 개요
+
+- 공인영어시험(TOEFL/TOEIC) 단어 학습 프로그램 (Python 3.12)
+- CLI(Typer)로 시작 → SyOps 웹 서비스(FastAPI)로 확장
+- 간격 반복(SM-2) 기반 학습 알고리즘
+- 3-Layer: CLI → Services → Data
+
+## 필수 원칙
+
+- **한국어 응답**: 모든 대화와 커밋 메시지는 한국어
+- **타입 힌팅 필수**: 모든 함수의 파라미터와 반환값에 타입 명시
+- **CLI에서 Data 직접 접근 금지**: 반드시 Service를 통해 접근
+- **Service에서 Raw SQL 금지**: 반드시 SQLAlchemy ORM을 통해 접근
+- **단어 데이터 하드코딩 금지**: 단어장은 import 기능으로 DB에 등록
+
+## 레이어 규칙
+
+```
+CLI (cli.py)
+ └─→ Services (services/*.py)   비즈니스 로직
+      └─→ Data (data/*.py)      DB 접근, ORM 모델
+```
+
+- CLI는 입출력 포맷팅과 사용자 인터페이스만 담당
+- Services는 학습 로직, LLM 호출, 통계 계산 등 핵심 로직 담당
+- Data는 SQLAlchemy 모델과 DB 세션 관리
+
+## 참고 문서
+
+- 아키텍처: `docs/architecture.md`
+- 기능 명세: `docs/features.md`
+- Phase 진행: `docs/phases/`

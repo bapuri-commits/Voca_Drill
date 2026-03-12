@@ -1,0 +1,7 @@
+typer[all]
+sqlalchemy
+aiosqlite
+pyyaml
+python-dotenv
+anthropic
+rich
