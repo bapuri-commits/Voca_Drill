@@ -2,13 +2,13 @@
 
 from pathlib import Path
 
-from sqlalchemy import create_engine
+from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from .models import Base
 
 
-def get_engine(db_path: str = "voca_drill.db"):
+def get_engine(db_path: str = "voca_drill.db") -> Engine:
     path = Path(db_path).resolve()
     return create_engine(f"sqlite:///{path}", echo=False)
 
