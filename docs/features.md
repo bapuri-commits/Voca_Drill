@@ -1,129 +1,198 @@
 # Voca_Drill — 기능 명세
 
-## Phase 1: CLI Tool
+## 학습 세션
 
-### 1.1 단어장 관리 (`wordbank`)
+### 카드 플립 (Level 1-2)
 
-TOEFL/TOEIC 단어장을 가져오고 관리한다.
+기본 학습 모드. 영어 단어를 보고 뜻을 떠올린 후 카드를 플립하여 확인.
 
-**기능:**
+**흐름:**
 
-- **가져오기**: CSV/JSON 형식의 단어장 파일을 DB에 등록
-  - 필수 필드: 영어 단어, 한국어 뜻
-  - 선택 필드: 품사, 예문, 시험 유형(TOEFL/TOEIC), 난이도
-- **목록**: 등록된 단어장 목록, 단어 수, 학습 진도 요약
-- **태그/그룹**: 단어를 Day별, 주제별로 그룹핑
+1. 영어 단어 + 품사 표시 (카드 앞면)
+2. 사용자가 머릿속으로 뜻을 떠올림 (자동 넘김 없음, 능동적 플립)
+3. 탭/클릭으로 플립 → 한국어 뜻 + 예문 공개 (카드 뒷면)
+4. 4단계 평가: 모름 / 헷갈림 / 알겠음 / 완벽
+5. 다음 카드
 
-**CLI 예시:**
+**카드 뒷면 구성:**
 
-```bash
-drill wordbank import toefl_words.csv --type toefl
-drill wordbank import toeic_words.csv --type toeic
-drill wordbank list
-drill wordbank stats --type toefl
-```
+- 한국어 뜻 (크게)
+- 예문 (있으면)
+- 유의어/반의어 (있으면, 작게)
 
-### 1.2 학습 세션 (`drill`)
+### 객관식 퀴즈 (Level 3)
 
-퀴즈 형태의 반복 학습 세션.
+한국어 뜻을 보고 4개 보기 중 올바른 영어 단어를 선택.
 
-**기능:**
+- 오답 보기는 동일 chapter/난이도에서 자동 생성
+- 정답 시 즉각 피드백, 오답 시 올바른 답 표시 후 다음 진행
 
-- **퀴즈 시작**: 설정에 따라 학습 세션 시작
-  - 모드: 영→한, 한→영, 예문 빈칸 채우기
-  - 범위: 전체, 시험별(TOEFL/TOEIC), 그룹별, 오답만, 새 단어만
-  - 수량: 세션당 학습할 단어 수 (기본 20)
-- **간격 반복**: SM-2 알고리즘으로 복습 대상 자동 선정
-- **세션 결과**: 정답률, 소요 시간, 약점 단어 요약
+### 역방향 퀴즈 (Level 4)
 
-**CLI 예시:**
+영영 풀이를 보고 영어 단어를 맞힘. 토플 시험의 Vocabulary/Synonym 문제 직접 대비.
 
-```bash
-drill start                           # 기본 세션 (복습 대상 우선)
-drill start --type toefl --count 30   # TOEFL 30개
-drill start --mode en2kr              # 영→한 모드
-drill start --mode kr2en              # 한→영 모드
-drill start --weak-only               # 약점 단어만
-drill start --new-only --count 10     # 새 단어 10개
-```
+- NotebookLM에서 추출한 영영 풀이 활용
+- 보기 4개 중 선택 방식
 
-### 1.3 복습 (`review`)
+### 타이핑 퀴즈 (Level 5)
 
-오답 및 약점 단어 집중 복습.
+한국어 뜻을 보고 영어 단어를 직접 타이핑. 스펠링까지 완전 숙지 확인.
 
-**기능:**
+- 오타 허용: Levenshtein distance 1 이내는 "거의 맞음" 처리 (정답으로 인정하되 스펠링 주의 알림)
+- 대소문자 무시
 
-- **오답 복습**: 최근 세션에서 틀린 단어 재학습
-- **약점 리스트**: 정답률이 낮은 단어 목록
-- **마킹**: 특정 단어를 "중요" 또는 "숙지" 표시
+## 세션 구성
 
-**CLI 예시:**
+### 세션 크기
 
-```bash
-drill review                          # 오답 복습 세션
-drill review --last 3                 # 최근 3세션의 오답
-drill weak                            # 약점 단어 목록
-drill mark "ubiquitous" --mastered    # 숙지 표시
-drill mark "ephemeral" --important    # 중요 표시
-```
+- 기본 10~15개 (config에서 조절 가능)
+- 모바일 자투리 시간 기준 2~5분 완료
 
-### 1.4 학습 통계 (`stats`)
+### 단어 선정 비율
 
-학습 진도와 성과를 추적한다.
+- **복습 대상** (next_review 도래): 60~70% 우선 배치
+- **새 단어**: 나머지 30~40%
+- **일일 새 단어 상한**: config 설정 (기본 15개, 복습 폭탄 방지)
+- 복습 대상이 부족하면 새 단어 비율 자동 증가
 
-**기능:**
+### 세션 내 재출제
 
-- **일일 통계**: 오늘 학습한 단어 수, 정답률
-- **전체 진도**: 시험별 총 단어 대비 학습/숙지 비율
-- **트렌드**: 일별/주별 학습량 변화
-- **예상 완료일**: 현재 속도 기준 전체 단어 학습 완료 예상
+- '모름' 평가한 단어는 세션 끝에 다시 출제
+- 전부 통과(모름 외 평가)할 때까지 반복
+- 세션을 마칠 때 "오늘 본 단어는 다 맞혔다"는 성취감 제공
 
-**CLI 예시:**
+### 세션 중단/이어하기
 
-```bash
-drill stats                           # 전체 통계 요약
-drill stats --today                   # 오늘 학습 현황
-drill stats --type toefl              # TOEFL 진도
-drill stats --trend --days 30         # 30일 트렌드
-```
+- 세션 중간에 나가도 진행 상태 자동 저장 (LearningSession.status = in_progress)
+- 앱 재접속 시 미완료 세션 이어하기 가능
 
-### 1.5 LLM 보조 (`ai`)
+## 복습 시스템
 
-LLM을 활용한 학습 보조 기능.
+### SM-2 알고리즘
 
-**기능:**
+각 단어의 ease_factor에 따라 복습 간격을 동적 계산.
 
-- **예문 생성**: 특정 단어가 포함된 자연스러운 예문 생성
-- **어원 설명**: 단어의 어원과 연상 기억법 제공
-- **유사어/반의어**: 관련 단어 네트워크 제공
-- **문맥 힌트**: 시험 출제 경향에 맞는 힌트
+- 정답 연속: interval = 이전 interval × ease_factor
+- 오답('모름'): interval 리셋 (1일), repetitions 리셋
+- ease_factor 최솟값: 1.3
 
-**CLI 예시:**
+### 4단계 피드백
 
-```bash
-drill ai example "ubiquitous"         # 예문 생성
-drill ai etymology "ubiquitous"       # 어원 설명
-drill ai similar "happy"              # 유사어
-```
+| 버튼 | SM-2 quality | 동작 |
+|------|-------------|------|
+| 모름 | 0 | interval 리셋, 세션 내 재출제 |
+| 헷갈림 | 2 | interval 유지/약간 증가 |
+| 알겠음 | 4 | interval 정상 증가 |
+| 완벽 | 5 | interval 대폭 증가 |
 
-## Phase 2: SyOps 웹 서비스 (계획)
+### 라이트너 단계 (UI 표시)
 
-Phase 1의 Core Services를 FastAPI로 래핑하여 SyOps에 배포.
+SM-2의 interval에서 파생된 5단계. 사용자는 단어가 어느 단계에 있는지 직관적으로 파악.
 
-### 웹 UI 기능
+- '모름' 평가 시 Level 1로 강등
 
-| 기능 | 설명 |
-|------|------|
-| 학습 대시보드 | 진도, 통계, 캘린더 히트맵 |
-| 웹 퀴즈 | 카드 플립, 객관식, 타이핑 |
-| 단어장 관리 | 업로드, 편집, 그룹핑 |
-| 복습 알림 | 간격 반복 스케줄 기반 알림 |
+### 퀴즈 유형 해금
+
+숙련도(mastery_level)가 오르면 더 어려운 퀴즈 유형이 자동 해금:
+
+- Level 1-2 → 카드 플립
+- Level 3 → 객관식
+- Level 4 → 역방향 (영영 풀이)
+- Level 5 → 타이핑
+
+## 컨텍스트 기반 강화 학습
+
+### 예문 노출
+
+- NotebookLM에서 추출한 교재 내 실제 예문을 카드 뒷면에 표시
+- 토플 지문 스타일의 예문으로 시험 감각 유지
+
+### 유의어/반의어 세트
+
+- 관련 단어를 묶어서 같은 세션에 출제
+- 토플 Synonym 문제 유형 대비
+- 카드 뒷면에 관련 유의어/반의어 간략 표시
+
+### 영영 풀이 활용
+
+- Level 4 역방향 퀴즈에서 영영 풀이로 출제
+- 카드 뒷면 추가 정보로도 표시 가능
+
+## 단어장 관리
+
+### Import
+
+- JSON/CSV 형태의 단어장 파일을 DB에 등록
+- 필수 필드: english, korean
+- 선택 필드: part_of_speech, english_definition, example, synonyms, antonyms, chapter, difficulty, source
+- CLI: `drill wordbank import data.json --type toefl`
+
+### 목록/검색
+
+- 등록된 단어 목록 조회
+- 필터: chapter별, Level별, 시험별, status별
+- CLI: `drill wordbank list`, `drill wordbank list --chapter "Day 1"`
+
+### 데이터 파이프라인
+
+초록이 교재 → OCR 스캔 → 정제 → NotebookLM 분석 → JSON 병합 → CLI import → DB
+
+## 통계
+
+### 세션 통계
+
+- 정답률, 소요 시간, 최대 콤보
+- 세션 종료 시 결과 요약 화면
+
+### 일일 통계
+
+- 오늘 학습한 단어 수, 새 단어 수, 복습 단어 수
+- 정답률, 총 학습 시간
+- 세션 횟수
+
+### 전체 진도
+
+- 전체 단어 대비 각 Level 분포 차트 (Level 1~5 비율)
+- Chapter별 완료율
+- 예상 완료일 (현재 속도 기준)
+
+### 스트릭
+
+- 연속 학습 일수 추적 및 표시
+- 기록 갱신 시 알림
+
+## 게이미피케이션
+
+### 콤보 시스템
+
+- 연속 정답 시 콤보 카운터 증가
+- 콤보 마일스톤 (5, 10, 20...) 시 시각 효과
+- 세션 결과에 최대 콤보 기록
+
+### 가변적 일일 목표
+
+- 매일 컨디션에 따라 최소 p개 ~ 최대 q개 범위 내에서 목표 유연 설정
+- 최소 목표 달성 시 기본 보상
+- 최대 목표 달성 시 추가 보상
+
+### 시각적 보상
+
+- 목표 달성 시 불꽃놀이/축하 효과
+- 단어 Level 승급 시 시각적 피드백
+- 스트릭 기록 갱신 시 알림
+
+## LLM 보조 (Phase 3)
+
+- **예문 생성**: 단어가 포함된 자연스러운 예문
+- **어원 설명**: 단어의 어원과 연상 기억법
+- **유의어/반의어**: 관련 단어 네트워크 확장
 
 ## 우선순위
 
-1. **Phase 1-1**: 단어 DB + 가져오기 (WordBank, Data Layer)
-2. **Phase 1-2**: 퀴즈 엔진 (DrillEngine, 기본 영→한/한→영)
-3. **Phase 1-3**: 간격 반복 (Scheduler, SM-2)
-4. **Phase 1-4**: 학습 통계 (StatsTracker)
-5. **Phase 1-5**: LLM 보조 (예문, 어원)
-6. **Phase 2**: FastAPI + SyOps 배포
+1. **Phase 1-1**: Data Layer + 샘플 데이터
+2. **Phase 1-2**: WordBank + CLI import
+3. **Phase 1-3**: SM-2 Scheduler + DrillEngine
+4. **Phase 1-4**: 다차원 퀴즈 + 통계
+5. **Phase 2-1**: FastAPI 서버
+6. **Phase 2-2**: React 모바일 UI + 게이미피케이션
+7. **Phase 3**: 배포 + LLM 보조
