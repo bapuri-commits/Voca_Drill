@@ -1,0 +1,133 @@
+{
+  "test_name": "Review TEST Day 11-15",
+  "covers": [
+    "Day 11",
+    "Day 12",
+    "Day 13",
+    "Day 14",
+    "Day 15"
+  ],
+  "question_count": 10,
+  "questions": [
+    {
+      "number": 1,
+      "question_text": "Nikola Tesla, the inventor of the induction motor, developed his reputation as a mad scientist from his eccentric personal habits.",
+      "highlighted_word": "eccentric",
+      "choices": {
+        "A": "remarkable",
+        "B": "renowned",
+        "C": "genuine",
+        "D": "unusual"
+      },
+      "answer": null
+    },
+    {
+      "number": 2,
+      "question_text": "A 16th-century European geographical theory that California was an island was refuted in the later expeditions of Juan Bautista de Anza.",
+      "highlighted_word": "refuted",
+      "choices": {
+        "A": "strengthened",
+        "B": "confirmed",
+        "C": "advanced",
+        "D": "disproved"
+      },
+      "answer": null
+    },
+    {
+      "number": 3,
+      "question_text": "Some experts envision a future in which all major diseases have been eradicated.",
+      "highlighted_word": "envision",
+      "choices": {
+        "A": "imagine",
+        "B": "promote",
+        "C": "commend",
+        "D": "desire"
+      },
+      "answer": null
+    },
+    {
+      "number": 4,
+      "question_text": "Respectful and open dialogue is essential to sustaining intimate relationships.",
+      "highlighted_word": "intimate",
+      "choices": {
+        "A": "consistent",
+        "B": "authentic",
+        "C": "eclectic",
+        "D": "close"
+      },
+      "answer": null
+    },
+    {
+      "number": 5,
+      "question_text": "Smallpox decimated the local population, which had no immunity to the foreign disease.",
+      "highlighted_word": "decimated",
+      "choices": {
+        "A": "unleashed",
+        "B": "impacted",
+        "C": "frightened",
+        "D": "destroyed"
+      },
+      "answer": null
+    },
+    {
+      "number": 6,
+      "question_text": "During the presidential debate, economic consideration predominated all other issues being discussed.",
+      "highlighted_word": "predominated",
+      "choices": {
+        "A": "disregarded",
+        "B": "raised",
+        "C": "generated",
+        "D": "outweighed"
+      },
+      "answer": null
+    },
+    {
+      "number": 7,
+      "question_text": "The Monroe Doctrine was the cornerstone of American foreign policy during the 19th century.",
+      "highlighted_word": "cornerstone",
+      "choices": {
+        "A": "basis",
+        "B": "epitome",
+        "C": "formulation",
+        "D": "instrument"
+      },
+      "answer": null
+    },
+    {
+      "number": 8,
+      "question_text": "During mating season, male bison try to exert their dominance in the herd.",
+      "highlighted_word": "exert",
+      "choices": {
+        "A": "achieve",
+        "B": "initiate",
+        "C": "exercise",
+        "D": "retain"
+      },
+      "answer": null
+    },
+    {
+      "number": 9,
+      "question_text": "Napoleon made an attempt at conquering all of Europe, albeit without success.",
+      "highlighted_word": "albeit",
+      "choices": {
+        "A": "undoubtedly",
+        "B": "besides",
+        "C": "although",
+        "D": "unfortunately"
+      },
+      "answer": null
+    },
+    {
+      "number": 10,
+      "question_text": "Because of population decline in the suburbs, the periphery of the city contains many run-down buildings.",
+      "highlighted_word": "periphery",
+      "choices": {
+        "A": "territory",
+        "B": "fringe",
+        "C": "apex",
+        "D": "core"
+      },
+      "answer": null
+    }
+  ]
+}

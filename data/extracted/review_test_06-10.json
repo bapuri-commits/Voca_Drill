@@ -1,0 +1,133 @@
+{
+  "test_name": "Review TEST Day 6-10",
+  "covers": [
+    "Day 06",
+    "Day 07",
+    "Day 08",
+    "Day 09",
+    "Day 10"
+  ],
+  "question_count": 10,
+  "questions": [
+    {
+      "number": 1,
+      "question_text": "The Greeks deceived the Trojans with a giant wooden horse that concealed a group of soldiers.",
+      "highlighted_word": "deceived",
+      "choices": {
+        "A": "liberated",
+        "B": "decorated",
+        "C": "misled",
+        "D": "detached"
+      },
+      "answer": null
+    },
+    {
+      "number": 2,
+      "question_text": "An ample supply of oxygen is required for the cells of the body to function correctly.",
+      "highlighted_word": "ample",
+      "choices": {
+        "A": "even",
+        "B": "abundant",
+        "C": "improved",
+        "D": "average"
+      },
+      "answer": null
+    },
+    {
+      "number": 3,
+      "question_text": "Talented art forgers are able to perfectly duplicate famous works of art.",
+      "highlighted_word": "duplicate",
+      "choices": {
+        "A": "reproduce",
+        "B": "depict",
+        "C": "capture",
+        "D": "absorb"
+      },
+      "answer": null
+    },
+    {
+      "number": 4,
+      "question_text": "Supplementary information is found in an appendix at the back of the textbook.",
+      "highlighted_word": "Supplementary",
+      "choices": {
+        "A": "Detailed",
+        "B": "Useful",
+        "C": "Specific",
+        "D": "Extra"
+      },
+      "answer": null
+    },
+    {
+      "number": 5,
+      "question_text": "Beneath the city of Paris is a 200-mile intricate network of tunnels that date back to 13th century mining.",
+      "highlighted_word": "intricate",
+      "choices": {
+        "A": "extensive",
+        "B": "isolated",
+        "C": "elaborate",
+        "D": "invisible"
+      },
+      "answer": null
+    },
+    {
+      "number": 6,
+      "question_text": "Many procedures became redundant with the advent of the Ford assembly line in the early 20th century.",
+      "highlighted_word": "redundant",
+      "choices": {
+        "A": "vague",
+        "B": "superfluous",
+        "C": "absurd",
+        "D": "aggressive"
+      },
+      "answer": null
+    },
+    {
+      "number": 7,
+      "question_text": "The US government offered extremely cheap land as an inducement for people to settle the West.",
+      "highlighted_word": "inducement",
+      "choices": {
+        "A": "aftermath",
+        "B": "alternative",
+        "C": "enterprise",
+        "D": "incentive"
+      },
+      "answer": null
+    },
+    {
+      "number": 8,
+      "question_text": "The ancient Japanese samurai code required an oath of absolute allegiance to the Emperor unto death.",
+      "highlighted_word": "allegiance",
+      "choices": {
+        "A": "consensus",
+        "B": "dedication",
+        "C": "power",
+        "D": "recompense"
+      },
+      "answer": null
+    },
+    {
+      "number": 9,
+      "question_text": "Architects are tasked with finding the optimum balance between form and function in their structures.",
+      "highlighted_word": "optimum",
+      "choices": {
+        "A": "supreme",
+        "B": "required",
+        "C": "firm",
+        "D": "delicate"
+      },
+      "answer": null
+    },
+    {
+      "number": 10,
+      "question_text": "A common attribute of animal species that live on islands is their comparatively small size.",
+      "highlighted_word": "attribute",
+      "choices": {
+        "A": "characteristic",
+        "B": "shortcoming",
+        "C": "condition",
+        "D": "truism"
+      },
+      "answer": null
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "test_name": "Review TEST Day 16-20",
+  "covers": [
+    "Day 16",
+    "Day 17",
+    "Day 18",
+    "Day 19",
+    "Day 20"
+  ],
+  "question_count": 10,
+  "questions": [
+    {
+      "number": 1,
+      "question_text": "The stagnant economy, precipitated by the international trade embargoes, was of great concern to the nation's policymakers.",
+      "highlighted_word": "stagnant",
+      "choices": {
+        "A": "uneven",
+        "B": "domestic",
+        "C": "striking",
+        "D": "sluggish"
+      },
+      "answer": "D"
+    },
+    {
+      "number": 2,
+      "question_text": "The vehicle was badly damaged in the collision though luckily none of the passengers were injured.",
+      "highlighted_word": "collision",
+      "choices": {
+        "A": "crash",
+        "B": "turbulence",
+        "C": "resistance",
+        "D": "incident"
+      },
+      "answer": "A"
+    },
+    {
+      "number": 3,
+      "question_text": "People with incomes below a certain threshold are not required to pay income tax.",
+      "highlighted_word": "threshold",
+      "choices": {
+        "A": "credence",
+        "B": "capacity",
+        "C": "limit",
+        "D": "interest"
+      },
+      "answer": "C"
+    },
+    {
+      "number": 4,
+      "question_text": "A typical jazz performance involves musicians playing a mix of rehearsed and improvised songs.",
+      "highlighted_word": "improvised",
+      "choices": {
+        "A": "insightful",
+        "B": "unplanned",
+        "C": "sophisticated",
+        "D": "important"
+      },
+      "answer": "B"
+    },
+    {
+      "number": 5,
+      "question_text": "The employee's objectives were not compatible with the goals of the company.",
+      "highlighted_word": "compatible",
+      "choices": {
+        "A": "congruous",
+        "B": "contradictory",
+        "C": "concerned",
+        "D": "identical"
+      },
+      "answer": "A"
+    },
+    {
+      "number": 6,
+      "question_text": "Copyright is often a contentious issue among competing technology companies.",
+      "highlighted_word": "contentious",
+      "choices": {
+        "A": "relevant",
+        "B": "critical",
+        "C": "fundamental",
+        "D": "disputed"
+      },
+      "answer": "D"
+    },
+    {
+      "number": 7,
+      "question_text": "The Battle of Waterloo in 1815 resulted in a decisive defeat for Napoleon's army.",
+      "highlighted_word": "decisive",
+      "choices": {
+        "A": "questionable",
+        "B": "definitive",
+        "C": "shocking",
+        "D": "temporary"
+      },
+      "answer": "B"
+    },
+    {
+      "number": 8,
+      "question_text": "People from isolated cultures are wary when approached by strangers.",
+      "highlighted_word": "wary",
+      "choices": {
+        "A": "intrusive",
+        "B": "durable",
+        "C": "reliable",
+        "D": "cautious"
+      },
+      "answer": "D"
+    },
+    {
+      "number": 9,
+      "question_text": "Andrew Carnegie endowed public libraries across America with millions of dollars.",
+      "highlighted_word": "endowed",
+      "choices": {
+        "A": "assigned",
+        "B": "released",
+        "C": "transferred",
+        "D": "donated"
+      },
+      "answer": "D"
+    },
+    {
+      "number": 10,
+      "question_text": "In the Victorian era, affluent landowners hired laborers to work their fields.",
+      "highlighted_word": "affluent",
+      "choices": {
+        "A": "wealthy",
+        "B": "royal",
+        "C": "prominent",
+        "D": "knowledgeable"
+      },
+      "answer": "A"
+    }
+  ]
+}
