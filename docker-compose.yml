@@ -1,0 +1,11 @@
+services:
+  voca-drill:
+    build: .
+    container_name: voca-drill
+    restart: unless-stopped
+    ports:
+      - "8500:8500"
+    volumes:
+      - /opt/data/voca-drill:/app/data
+    env_file:
+      - /opt/envs/voca-drill.env

@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.db
+*.db-journal
+.env
+.venv/
+venv/
+node_modules/
+frontend/node_modules/
+frontend/dist/
+docs/bookpdf/
+data/chunks/
+data/extracted/
+.cursor/
+.git/
+*.pdf
+_tmp_*
