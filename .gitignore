@@ -20,6 +20,7 @@ venv/
 # IDE
 .vscode/
 .idea/
+.cursor/plans/
 
 # PDF (대용량, git에 올리지 않음)
 docs/bookpdf/
