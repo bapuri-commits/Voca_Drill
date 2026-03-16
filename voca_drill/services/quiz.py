@@ -1,4 +1,4 @@
-"""QuizGenerator — 다차원 퀴즈 생성 + 채점."""
+"""QuizGenerator -- 다차원 퀴즈 생성 + 채점."""
 
 from __future__ import annotations
 
@@ -93,7 +93,7 @@ class QuizGenerator:
         )
 
     def _gen_card_flip(self, word: Word) -> QuizItem:
-        """카드 플립 — 앞면: 영어+품사, 뒷면: 동의어+한국어+예문."""
+        """카드 플립 -- 앞면: 영어+품사, 뒷면: 동의어+한국어+예문."""
         meanings = self._get_meanings(word)
         primary = meanings[0] if meanings else {}
 
@@ -116,11 +116,9 @@ class QuizGenerator:
         )
 
     def _gen_multiple_choice(self, word: Word) -> QuizItem:
-        """객관식 — 동의어를 보여주고 4개 보기 중 원래 단어 선택."""
+        """객관식 -- 동의어를 보여주고 4개 보기 중 원래 단어 선택."""
         meanings = self._get_meanings(word)
-        all_synonyms: list[str] = []
-        for m in meanings:
-            all_synonyms.extend(m.get("synonyms", []))
+        all_synonyms = self._collect_synonyms(meanings, word)
 
         distractors = self._get_distractors(word, count=3)
 
@@ -145,18 +143,18 @@ class QuizGenerator:
         )
 
     def _gen_reverse(self, word: Word) -> QuizItem:
-        """역방향 — 영영 풀이/동의어를 보고 단어 선택."""
+        """역방향 -- 영영 풀이/동의어를 보고 단어 선택."""
         meanings = self._get_meanings(word)
         primary = meanings[0] if meanings else {}
 
         english_def = primary.get("english_definition", "")
-        synonyms = primary.get("synonyms", [])
+        all_synonyms = self._collect_synonyms(meanings, word)
 
         if english_def:
             prompt = english_def
             prompt_type = "english_definition"
-        elif synonyms:
-            prompt = ", ".join(synonyms)
+        elif all_synonyms:
+            prompt = ", ".join(all_synonyms)
             prompt_type = "synonyms"
         else:
             prompt = primary.get("korean", word.english)
@@ -180,16 +178,17 @@ class QuizGenerator:
         )
 
     def _gen_typing(self, word: Word) -> QuizItem:
-        """타이핑 — 한국어 뜻+동의어를 보고 영어 단어 직접 입력."""
+        """타이핑 -- 한국어 뜻+동의어를 보고 영어 단어 직접 입력."""
         meanings = self._get_meanings(word)
         primary = meanings[0] if meanings else {}
+        all_synonyms = self._collect_synonyms(meanings, word)
 
         return QuizItem(
             word_id=word.id,
             quiz_type="typing",
             question={
                 "korean": primary.get("korean", ""),
-                "synonyms": primary.get("synonyms", []),
+                "synonyms": all_synonyms[:3],
                 "part_of_speech": primary.get("part_of_speech", ""),
                 "hint_length": len(word.english),
             },
@@ -210,14 +209,36 @@ class QuizGenerator:
                 "order": m.meaning_order,
                 "part_of_speech": m.part_of_speech,
                 "korean": m.korean,
-                "synonyms": json.loads(m.synonyms_json),
-                "example": m.example,
+                "tested_synonyms": json.loads(m.tested_synonyms_json),
+                "important_synonyms": json.loads(m.important_synonyms_json),
+                "example_en": m.example_en,
+                "example_ko": m.example_ko,
                 "english_definition": m.english_definition,
             })
         return result
 
+    def _collect_synonyms(self, meanings: list[dict], word: Word) -> list[str]:
+        """mastery_level에 따라 동의어 수집.
+
+        Level 1-3: 기출동의어만
+        Level 4-5: 기출 + 중요동의어
+        """
+        progress = (
+            self._session.query(WordProgress)
+            .filter(WordProgress.word_id == word.id)
+            .first()
+        )
+        level = progress.mastery_level if progress else 1
+
+        synonyms: list[str] = []
+        for m in meanings:
+            synonyms.extend(m.get("tested_synonyms", []))
+            if level >= 4:
+                synonyms.extend(m.get("important_synonyms", []))
+        return synonyms
+
     def _get_distractors(self, word: Word, *, count: int = 3) -> list[Word]:
-        """오답 보기 생성 — 같은 챕터/시험 유형 우선, 부족하면 전체에서."""
+        """오답 보기 -- 같은 챕터 우선, 부족하면 전체에서."""
         same_chapter = (
             self._session.query(Word)
             .filter(Word.id != word.id, Word.chapter == word.chapter)
@@ -242,7 +263,6 @@ def _levenshtein(s1: str, s2: str) -> int:
     """Levenshtein distance 계산."""
     if len(s1) < len(s2):
         return _levenshtein(s2, s1)
-
     if len(s2) == 0:
         return len(s1)
 

@@ -55,7 +55,7 @@ def wordbank_import(
 def wordbank_list(
     chapter: str | None = typer.Option(None, "--chapter", "-c", help="챕터 필터"),
     exam_type: str | None = typer.Option(None, "--type", "-t", help="시험 유형"),
-    limit: int = typer.Option(50, "--limit", "-n", help="표시 개수"),
+    limit: int = typer.Option(57, "--limit", "-n", help="표시 개수"),
 ) -> None:
     """등록된 단어 목록 조회."""
     wb = _get_wordbank()
@@ -70,27 +70,27 @@ def wordbank_list(
     table.add_column("단어", style="bold cyan")
     table.add_column("챕터", width=8)
     table.add_column("뜻", min_width=20)
-    table.add_column("동의어", min_width=25)
-    table.add_column("★", width=3)
+    table.add_column("기출동의어", min_width=25)
+    table.add_column("빈도", width=3)
 
     for w in words:
         meanings_str = " / ".join(
             f"[{m.part_of_speech}] {m.korean}" for m in w.meanings
         )
-        synonyms_all: list[str] = []
+        tested_all: list[str] = []
         for m in w.meanings:
-            synonyms_all.extend(json.loads(m.synonyms_json))
-        synonyms_str = ", ".join(synonyms_all[:5])
-        if len(synonyms_all) > 5:
-            synonyms_str += f" (+{len(synonyms_all) - 5})"
+            tested_all.extend(json.loads(m.tested_synonyms_json))
+        tested_str = ", ".join(tested_all[:5])
+        if len(tested_all) > 5:
+            tested_str += f" (+{len(tested_all) - 5})"
 
         table.add_row(
             str(w.word_order),
             w.english,
             w.chapter,
             meanings_str,
-            synonyms_str,
-            "★" * w.importance,
+            tested_str,
+            "*" * w.frequency,
         )
 
     console.print(table)
@@ -119,7 +119,7 @@ def wordbank_chapters(
 
 @wordbank_app.command("show")
 def wordbank_show(
-    word: str = typer.Argument(..., help="조회할 영어 단어"),
+    word: str = typer.Option(..., "--word", "-w", help="조회할 영어 단어"),
 ) -> None:
     """단어 상세 조회."""
     wb = _get_wordbank()
@@ -129,28 +129,37 @@ def wordbank_show(
         console.print(f"[red]'{word}' 단어를 찾을 수 없습니다.[/red]")
         raise typer.Exit(1)
 
-    console.print(f"\n[bold cyan]{w.english}[/bold cyan]  {'★' * w.importance}")
+    console.print(f"\n[bold cyan]{w.english}[/bold cyan]  {'*' * w.frequency}")
     if w.pronunciation:
         console.print(f"  발음: {w.pronunciation}")
 
     derivatives = json.loads(w.derivatives_json)
     if derivatives:
-        console.print(f"  파생어: {', '.join(derivatives)}")
+        deriv_str = ", ".join(
+            f"{d['pos']} {d['word']}" if isinstance(d, dict) else str(d)
+            for d in derivatives
+        )
+        console.print(f"  파생어: {deriv_str}")
 
     console.print(f"  챕터: {w.chapter} | 순서: {w.word_order} | 시험: {w.exam_type}")
 
     for m in w.meanings:
-        synonyms = json.loads(m.synonyms_json)
+        tested = json.loads(m.tested_synonyms_json)
+        important = json.loads(m.important_synonyms_json)
         console.print(f"\n  [bold]{m.meaning_order}. [{m.part_of_speech}] {m.korean}[/bold]")
-        if synonyms:
-            console.print(f"     동의어: [green]{', '.join(synonyms)}[/green]")
-        if m.example:
-            console.print(f"     예문: [dim]{m.example}[/dim]")
+        if tested:
+            console.print(f"     기출: [green]{', '.join(tested)}[/green]")
+        if important:
+            console.print(f"     중요: [blue]{', '.join(important)}[/blue]")
+        if m.example_en:
+            console.print(f"     예문: [dim]{m.example_en}[/dim]")
+        if m.example_ko:
+            console.print(f"     해석: [dim]{m.example_ko}[/dim]")
         if m.english_definition:
             console.print(f"     영영: {m.english_definition}")
 
     if w.exam_tip:
-        console.print(f"\n  [yellow]💡 출제 포인트: {w.exam_tip}[/yellow]")
+        console.print(f"\n  [yellow]출제 포인트: {w.exam_tip}[/yellow]")
 
     console.print()
 

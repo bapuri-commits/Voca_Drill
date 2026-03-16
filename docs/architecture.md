@@ -38,15 +38,14 @@ voca_drill/
 - **Data** → SQLAlchemy ORM으로 DB 접근 캡슐화.
 - **API** → Services를 HTTP로 노출. 비즈니스 로직은 Services에 유지.
 
-## DB 스키마 (초안 — 데이터 확보 후 확정)
+## DB 스키마
 
-> **주의**: 아래 스키마는 초록이 교재 페이지 분석에 기반한 초안이다.
-> OCR + NotebookLM 실데이터를 확보한 후에 필드, 관계, 예외 케이스를 파악하여 확정한다.
+> 교재 분석(Day 01~05) 기반으로 확정. 상세 분석: `docs/bookpdf/hackers_voca_analysis.md`
 
 ### 핵심 구조: Word + WordMeaning 분리
 
 초록이는 한 단어가 여러 뜻을 가지며, **뜻마다 다른 영어 동의어 세트와 예문**이 붙는다.
-이를 정확히 표현하려면 Word(단어 단위)와 WordMeaning(뜻 단위)을 분리해야 한다.
+Word(단어 단위)와 WordMeaning(뜻 단위)을 분리한다.
 
 ### Word (단어)
 
@@ -54,14 +53,14 @@ voca_drill/
 |------|------|------|
 | id | Integer PK | 자동 증가 |
 | english | String, index | 영어 단어 |
-| pronunciation | String | 발음 기호 |
-| importance | Integer | 중요도/빈출도 (★ 개수, 0-3) |
-| derivatives_json | String | 파생어 목록 (JSON array) |
+| pronunciation | String | 발음 기호 (예: [iksplɔ́it]) |
+| frequency | Integer | 출제빈도 (★ 개수, 1-3) |
+| derivatives_json | String | 기출파생어 (JSON: [{"pos":"n.","word":"exploitation"}]) |
 | exam_type | String | 시험 유형 (toefl/toeic) |
-| chapter | String | 교재 챕터 (Day 1, Day 2...) |
-| word_order | Integer | 교재 내 순서 |
-| exam_tip | String | 최신출제 포인트 (nullable) |
-| source | String | 데이터 출처 (ocr/notebooklm/manual) |
+| chapter | String | 교재 챕터 (Day 01, Day 02...) |
+| word_order | Integer | Day 내 순서 (빈도 높은 순) |
+| exam_tip | String | 최신출제 포인트 (nullable, 선별적) |
+| source | String | 데이터 출처 (ocr/manual) |
 | created_at | DateTime | 생성일 |
 
 ### WordMeaning (뜻 — Word와 1:N)
@@ -71,11 +70,36 @@ voca_drill/
 | id | Integer PK | 자동 증가 |
 | word_id | Integer FK | Word 참조 |
 | meaning_order | Integer | 뜻 순서 (1, 2, 3...) |
-| part_of_speech | String | 품사 (adj, noun, verb 등) |
-| korean | String | 한국어 뜻 (보조) |
-| synonyms_json | String | **영어 동의어 목록 (JSON array) — 핵심 학습 대상** |
-| example | String | 예문 |
-| english_definition | String | 영영 풀이 (NotebookLM 보강, nullable) |
+| part_of_speech | String | 품사 (v., adj., n., phr. 등) |
+| korean | String | 한국어 뜻 |
+| tested_synonyms_json | String | **기출동의어** (JSON array) — 시험 정답으로 출제된 동의어 |
+| important_synonyms_json | String | **중요동의어** (JSON array) — 출제 가능성 높은 동의어 |
+| example_en | String | 영어 예문 |
+| example_ko | String | 한국어 예문 해석 |
+
+**기출동의어 vs 중요동의어**: 교재에서 색상으로 구분. 기출동의어가 최우선 학습 대상이며, 숙련도가 오르면 중요동의어까지 확장.
+
+### BookTest (교재 테스트 — Quiz / Review TEST / Final TEST)
+
+| 컬럼 | 타입 | 설명 |
+|------|------|------|
+| id | Integer PK | 자동 증가 |
+| test_type | String | quiz / review_test / final_test |
+| test_name | String | "Day 01 Quiz", "Review TEST Day 1-5" 등 |
+| covers_json | String | 해당 Day 범위 (JSON array) |
+
+### BookTestQuestion (교재 테스트 문제 — BookTest와 1:N)
+
+| 컬럼 | 타입 | 설명 |
+|------|------|------|
+| id | Integer PK | 자동 증가 |
+| test_id | Integer FK | BookTest 참조 |
+| question_order | Integer | 문제 순서 |
+| question_type | String | synonym_matching / multiple_choice |
+| question_text | String | 문제 문장 (Review TEST용, nullable) |
+| target_word | String | 문제 대상 단어 |
+| choices_json | String | 보기 (JSON) |
+| answer | String | 정답 |
 
 ### WordProgress (단어별 학습 진도)
 
@@ -171,15 +195,15 @@ mastery_level이 오르면 더 어려운 퀴즈가 해금.
 ## 데이터 파이프라인
 
 ```
-초록이 교재
-    ↓ OCR 스캔
-원본 텍스트
-    ↓ 정제 (단어/뜻/품사/동의어 분리)
-    ↓ NotebookLM 분석 → 영영 풀이, 추가 예문, 유의어/반의어 그룹
-    ↓ JSON 파일로 병합
-    ↓ CLI import (초록이용 파서)
+초록이 스캔 PDF (376p)
+    ↓ Day 단위 PDF 분할 (30청크 × 10p)
+    ↓ AI(Claude/GPT-4o)로 JSON 추출
+    ↓ 자동 검증 + 수동 스팟 체크
+    ↓ CLI import
     DB
 ```
+
+> 상세: `docs/data-extraction.md`
 
 다른 단어장 추가 시: 해당 단어장용 파서만 추가. 최소 필드(english, korean)만 있으면 import 가능.
 

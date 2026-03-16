@@ -7,7 +7,7 @@
 
 - **목적**: 실제 사용할 영단어 학습 도구 (2-3명 사용)
 - **타겟**: TOEFL/TOEIC 범용 (단어장 추가로 확장 가능)
-- **1차 데이터**: 토플 '초록이' 교재
+- **1차 데이터**: 토플 '초록이' 교재 (30 Days × ~56단어 ≈ **1,680단어**)
 - **UX**: 카드 플립 자기 평가 + 다차원 퀴즈, 모바일 퍼스트
 - **개발 순서**: 데이터 확보/분석 → 서비스 로직 구현 → FastAPI → SyOps React UI → VPS 배포
 
@@ -18,9 +18,9 @@
 | 복습 알고리즘 | SM-2 + 라이트너 하이브리드 | SM-2의 정교한 간격 계산 + 라이트너의 직관적 단계 표시 |
 | 평가 스케일 | 4단계 (모름/헷갈림/알겠음/완벽) | 모바일 엄지 조작에 4버튼 적당 |
 | 퀴즈 유형 | 다차원 (카드 플립→객관식→역방향→타이핑) | 숙련도에 따라 난이도 자동 상승 |
-| 데이터 소스 | OCR 스캔 + NotebookLM 연동 | 교재 데이터 + 영영 풀이/예문/유의어 그룹 |
+| 데이터 소스 | 스캔 PDF → AI(Claude/GPT-4o)로 JSON 추출 | Day 단위 분할, 기출/중요동의어 구분 추출 |
 | DB | SQLAlchemy + SQLite | 로컬 경량, Phase 2에서도 그대로 사용 |
-| DB 설계 | 데이터 확보 후 확정 | 단어장마다 데이터 형태가 다름, 실데이터 기반 설계 |
+| DB 설계 | 교재 분석 기반 확정 | Word + WordMeaning 분리, 기출/중요동의어 구분 |
 | 프론트엔드 | SyOps React 내 `/voca` 페이지 | 기존 인프라 활용, 모바일 퍼스트 |
 | 백엔드 | FastAPI 독립 서비스 (포트 8400) | SyOps와 분리된 서비스 |
 | 인증 | SyOps JWT 공유 | 동일 JWT_SECRET |
@@ -28,138 +28,86 @@
 
 ---
 
-## 초록이 교재 분석
+## 초록이 교재 분석 (완료)
+
+> 상세 분석: `docs/bookpdf/hackers_voca_analysis.md`
 
 ### 학습 방식의 핵심: 영어 동의어 암기
 
-초록이는 일반적인 영한 단어장과 다르다. **한국어 뜻을 외우는 것이 아니라 영어 동의어/유의어로 암기**하도록 설계된 책이다.
+초록이는 일반적인 영한 단어장과 다르다. **한국어 뜻을 외우는 것이 아니라 영어 동의어/유의어로 암기**하도록 설계된 책이다. 토플 Reading의 "Which of the following is closest in meaning to X?" 문제 유형에 직결.
 
-이것은 토플 시험의 특성과 직결된다:
-- 토플 Reading에서 "Which of the following is closest in meaning to X?"처럼 **영어 동의어를 묻는 문제**가 핵심 출제 유형
-- 따라서 prominent = noticeable, conspicuous, outstanding, remarkable 이런 식으로 **영어 동의어 세트를 통째로 익히는 것**이 학습의 본질
+### 교재 데이터 구조 (6가지 구성 요소)
 
-이 점은 학습 시스템과 퀴즈 설계에 근본적으로 영향을 준다:
-- 카드 앞면: 영어 단어
-- 카드 뒷면: **영어 동의어 목록이 중심**, 한국어 뜻은 보조
-- 퀴즈: 영어 동의어 선택 문제가 핵심 퀴즈 유형이 되어야 함
-- 역방향: 동의어를 보고 원래 단어를 맞히는 것도 중요
+| # | 구성 요소 | 설명 |
+|---|----------|------|
+| ① | 표제어 | 기출 단어, 출제빈도 ★1~3, Day 내 빈도순 배치 |
+| ② | **기출동의어** | 시험에서 **정답으로 출제된** 동의어 (녹색 강조) — 최우선 암기 |
+| ③ | **중요동의어** | 출제 가능성 높은 동의어 (일반 표기) — 확장 학습 |
+| ④ | 기출파생어 | 시험에 출제된 파생어 |
+| ⑤ | 예문 + 해석 | 영어 예문(본문) + 한국어 해석(페이지 하단 별도) |
+| ⑥ | 최신출제 포인트 | 추가 의미, 혼동어, 관련 동의어 팁 (선별적) |
 
-### 데이터 구조 (교재 페이지 분석)
+### 핵심 수치
 
-실제 초록이 페이지에서 추출한 데이터 구조:
+- **총 단어**: ~1,680개 (30 Days × ~56개/Day)
+- **각 Day**: 10페이지 (단어 9p + Quiz 1p)
+- **빈도 분포**: Day 내 ★★★ → ★★ → ★ 순서 배치
+- **다의어**: 한 단어에 여러 뜻, 뜻마다 다른 동의어 세트 + 예문
 
-```
-단어 4: prominent ★★★
-├── 발음: [prɑ́mənənt]
-├── 파생어: adv. prominently, n. prominence
-├── 뜻 1
-│   ├── 품사: adj
-│   ├── 영어 동의어: noticeable, conspicuous, outstanding, remarkable
-│   ├── 한국어: 눈에 띄는
-│   └── 예문: Mt. Fuji is a prominent natural landmark in Japan.
-└── 뜻 2
-    ├── 품사: adj
-    ├── 영어 동의어: important, leading, notable
-    ├── 한국어: 중요한
-    └── 예문: William Shakespeare is one of the most prominent figures...
+### 기출동의어 vs 중요동의어
 
-단어 5: replenish ★★★
-├── 발음: [riplέniʃ]
-├── 뜻 1
-│   ├── 품사: v
-│   ├── 영어 동의어: refill, restore, renew
-│   ├── 한국어: 보충하다
-│   └── 예문: The travelers replenished their supplies of water...
-└── 최신출제 포인트: renew가 '보충하다' 뜻일 때 replenish의 동의어가 될 수 있다
-```
+이 구분이 학습 프로그램에 핵심적:
+- **기출동의어**: 실제 시험 정답 → 최우선 학습
+- **중요동의어**: 출제 가능성 높음 → 숙련도 상승 후 확장
 
-### 데이터 구조에서 파악된 필드
+### 카드 UI 반영
 
-**단어(Word) 레벨:**
-- 영어 단어 (english)
-- 발음 기호 (pronunciation)
-- 중요도/빈출도 (★ 개수)
-- 파생어 목록 (derivatives)
-- 교재 내 순서 (word_order)
-- 교재 챕터 (chapter — Day 1, Day 2...)
-- 최신출제 포인트 (exam_tip — 일부 단어만)
-
-**뜻(Meaning) 레벨 — 한 단어에 여러 뜻 가능:**
-- 뜻 순서 (meaning_order)
-- 품사 (part_of_speech)
-- **영어 동의어 목록** (synonyms — 이것이 핵심 학습 대상)
-- 한국어 뜻 (korean — 보조)
-- 예문 (example)
-
-### 핵심 구조적 특징
-
-1. **1단어 N뜻**: prominent처럼 한 단어가 여러 뜻을 가지며, 뜻마다 다른 동의어 세트와 예문이 붙음
-2. **동의어가 뜻에 종속**: "눈에 띄는"의 동의어와 "중요한"의 동의어가 다름
-3. **영어 동의어가 1차 학습 대상**: 한국어 뜻은 이해를 돕는 보조 역할
-
-### 다른 단어장과의 차이
-
-단어장마다 OCR 데이터 형태가 다르다:
-- **초록이**: 풀 데이터 (발음, 파생어, 다의어, 동의어 세트, 예문, 출제 포인트)
-- **다른 TOEFL/TOEIC 단어장**: 더 단순할 수 있음 (영어-한국어만, 동의어 없음 등)
-
-→ DB 스키마는 초록이의 풀 데이터를 수용하되, 다른 단어장은 최소 필드(english, korean)만으로도 import 가능하게 설계해야 함.
-
-### DB 구조 검토 방향: Word + WordMeaning 분리
-
-현재 Word 테이블 1행 = 뜻 1개 구조로는 초록이 데이터를 정확히 담을 수 없다.
-검토 중인 구조:
-
-- **Word 테이블**: 단어 단위 (english, pronunciation, importance, derivatives, chapter...)
-- **WordMeaning 테이블**: 뜻 단위 (word_id FK, part_of_speech, korean, synonyms, example...)
-- 학습 진도(WordProgress)는 Word 단위로 관리
-
-**→ 이 구조는 실제 OCR + NotebookLM 데이터를 확보한 후에 확정한다.** 데이터를 보면서 필요한 필드, 관계, 예외 케이스를 파악한 뒤 스키마를 잡는 것이 안전하다.
+- **카드 앞면**: 영어 단어 + 품사 + 발음
+- **카드 뒷면**: 기출동의어 (크게) + 중요동의어 + 한국어 뜻 (보조) + 예문
 
 ---
 
-## 데이터 확보 계획
+## 데이터 추출 계획
 
-### Step 0: 데이터 확보 및 분석 (구현 전 선행)
+> 상세: `docs/data-extraction.md`
 
-1. **OCR 스캔**: 초록이 교재 전체 또는 일부를 OCR
-2. **NotebookLM 분석**: OCR 데이터를 NotebookLM에 넣어 영영 풀이, 추가 예문, 유의어/반의어 그룹 등 추출
-3. **데이터 정제**: OCR + NotebookLM 결과를 JSON 형태로 병합/정제
-4. **DB 스키마 확정**: 실데이터 기반으로 테이블 구조, 필드, 관계 확정
-5. **Import 파서 설계**: 초록이용 파서 구현, 추후 다른 단어장용 파서 추가 가능하도록
+### Phase 0: 데이터 추출 (스캔 PDF → JSON)
 
-### Import JSON 형식 (초록이 기준 — 초안)
+1. ✅ 교재 분석 완료 (Day 01~05 상세 분석, 구조 파악)
+2. **PDF를 Day 단위(10p)로 분할** (30청크, 스크립트 자동화)
+3. **Day별 AI 추출** (Claude/GPT-4o에 PDF + 프롬프트 입력)
+4. **검증 + Import** (자동 스크립트 + 스팟 체크)
+
+### Import JSON 형식 (확정)
 
 ```json
 {
-  "english": "prominent",
-  "pronunciation": "prɑ́mənənt",
-  "importance": 3,
-  "derivatives": ["adv. prominently", "n. prominence"],
-  "chapter": "Day 1",
-  "word_order": 4,
-  "exam_type": "toefl",
-  "exam_tip": null,
-  "meanings": [
+  "day": "Day 01",
+  "words": [
     {
-      "order": 1,
-      "part_of_speech": "adj",
-      "korean": "눈에 띄는",
-      "synonyms": ["noticeable", "conspicuous", "outstanding", "remarkable"],
-      "example": "Mt. Fuji is a prominent natural landmark in Japan."
-    },
-    {
-      "order": 2,
-      "part_of_speech": "adj",
-      "korean": "중요한",
-      "synonyms": ["important", "leading", "notable"],
-      "example": "William Shakespeare is one of the most prominent figures..."
+      "word_order": 1,
+      "english": "exploit",
+      "pronunciation": "[iksplɔ́it]",
+      "frequency": 3,
+      "derivatives": [{"pos": "n.", "word": "exploitation"}],
+      "exam_tip": "exploit는 동사가 아닌 명사로도 많이 쓰인다...",
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "v.",
+          "korean": "(부당하게) 이용하다",
+          "tested_synonyms": ["utilize", "use", "make use of", "take advantage of"],
+          "important_synonyms": [],
+          "example_en": "Human rights activists have led protests...",
+          "example_ko": "인권 운동가들은 아동의 노동을 이용하는 회사들에..."
+        }
+      ]
     }
-  ]
+  ],
+  "quiz": { ... }
 }
 ```
-
-→ 이 형식도 실데이터 확보 후 조정될 수 있음.
 
 ---
 
@@ -283,15 +231,13 @@ graph TB
 
 ## Phase별 개발 계획
 
-### Phase 0: 데이터 확보 및 분석 (구현 전 선행)
+### Phase 0: 데이터 추출 (스캔 PDF → JSON → DB)
 
-코드 구현 전에 실데이터를 확보하고 DB 스키마를 확정한다.
-
-1. 초록이 교재 OCR 스캔
-2. NotebookLM에 넣어 분석 데이터 추출 (영영 풀이, 추가 예문, 유의어/반의어 등)
-3. OCR + NotebookLM 결과를 JSON으로 정제
-4. 실데이터 기반으로 DB 스키마 확정
-5. Import JSON 형식 확정
+1. ✅ 교재 분석 완료
+2. PDF Day 단위 분할 (30청크 × 10p)
+3. AI로 Day별 JSON 추출 (단어 + Quiz)
+4. Review TEST / Final TEST 추출
+5. 검증 + CLI import
 
 ### Phase 1: 핵심 로직 + 데이터 (Voca_Drill 레포)
 
@@ -356,20 +302,18 @@ graph TB
 
 ```
 Phase 0                Phase 1 (Voca_Drill)        Phase 2 (양쪽 레포)     Phase 3
-데이터 확보             핵심 로직                    웹 서비스화              배포+고도화
+데이터 추출             핵심 로직 (완료)             웹 서비스화              배포+고도화
 
-OCR + NotebookLM       1-1 Data Layer              2-1 FastAPI + Auth      VPS 배포
-     ↓                  ↓                            ↓                    nginx 설정
-JSON 정제              1-2 WordBank + import        2-2 React 모바일 UI     헬스체크
-     ↓                  ↓                                                  LLM 보조
-DB 스키마 확정         1-3 SM-2 + DrillEngine
-                        ↓
-                       1-4 다차원 퀴즈 + 통계
+PDF 분할 (30Day)       1-1 Data Layer ✅            2-1 FastAPI + Auth      VPS 배포
+     ↓                 1-2 WordBank ✅               ↓                    nginx 설정
+AI JSON 추출           1-3 SM-2 + Drill ✅         2-2 React 모바일 UI     헬스체크
+     ↓                 1-4 퀴즈 + 통계 ✅                                   LLM 보조
+검증 + import
 ```
 
 ## 주의 사항
 
-- **데이터 선행**: Phase 0(데이터 확보)이 완료되어야 Phase 1 시작 가능
+- **Phase 1 완료**: 코드 구현은 끝남. Phase 0(데이터 추출)과 Phase 2를 병행 가능
 - **CLI 최소화**: 학습 세션 CLI는 만들지 않음. import/관리만 구현
 - **크로스 레포 작업**: Phase 2-2는 SyOps 레포. 각 프로젝트를 단독으로 열어서 개발
 - **모바일 테스트**: Phase 2-2에서 실기기 모바일 테스트 필수

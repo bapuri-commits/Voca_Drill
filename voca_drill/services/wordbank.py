@@ -1,4 +1,4 @@
-"""WordBank — 단어 DB CRUD, JSON import."""
+"""WordBank -- 단어 DB CRUD, JSON import."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from typing import Any
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, selectinload
 
-from ..data.models import Word, WordMeaning, WordProgress
+from ..data.models import BookTest, BookTestQuestion, Word, WordMeaning, WordProgress
 
 
 class WordBank:
@@ -25,14 +25,28 @@ class WordBank:
         exam_type: str = "toefl",
         source: str = "import",
     ) -> dict[str, int]:
-        """JSON 파일에서 단어를 DB에 import.
+        """Day JSON 파일에서 단어 + Quiz를 DB에 import.
 
-        Returns:
-            {"imported": N, "skipped": N} — 결과 요약
+        지원 형식:
+        - 추출 스크립트 출력: {"day": ..., "words": [...], "quiz": {...}}
+        - 단순 배열: [{"english": ..., "meanings": [...]}, ...]
         """
         path = Path(file_path)
         with open(path, "r", encoding="utf-8") as f:
-            words_data: list[dict[str, Any]] = json.load(f)
+            raw = json.load(f)
+
+        if isinstance(raw, dict) and "words" in raw:
+            words_data = raw["words"]
+            day_label = raw.get("day", "")
+            quiz_data = raw.get("quiz")
+        elif isinstance(raw, list):
+            words_data = raw
+            day_label = ""
+            quiz_data = None
+        else:
+            words_data = [raw]
+            day_label = ""
+            quiz_data = None
 
         imported = 0
         skipped = 0
@@ -43,10 +57,11 @@ class WordBank:
                 skipped += 1
                 continue
 
+            entry_exam_type = entry.get("exam_type", exam_type)
             existing = self._session.execute(
                 select(Word).where(
                     Word.english == english,
-                    Word.exam_type == entry.get("exam_type", exam_type),
+                    Word.exam_type == entry_exam_type,
                 )
             ).scalar_one_or_none()
 
@@ -54,12 +69,61 @@ class WordBank:
                 skipped += 1
                 continue
 
+            if not entry.get("chapter") and day_label:
+                entry["chapter"] = day_label
+
             word = self._build_word(entry, exam_type=exam_type, source=source)
             self._session.add(word)
             imported += 1
 
+        if quiz_data:
+            self._import_quiz(quiz_data, day_label=day_label)
+
         self._session.commit()
         return {"imported": imported, "skipped": skipped}
+
+    def import_test_json(
+        self,
+        file_path: str | Path,
+    ) -> dict[str, int]:
+        """Review/Final TEST JSON 파일을 DB에 import."""
+        path = Path(file_path)
+        with open(path, "r", encoding="utf-8") as f:
+            raw = json.load(f)
+
+        tests = raw if isinstance(raw, list) else [raw]
+        imported = 0
+
+        for test_data in tests:
+            test_name = test_data.get("test_name", "")
+            existing = self._session.execute(
+                select(BookTest).where(BookTest.test_name == test_name)
+            ).scalar_one_or_none()
+            if existing:
+                continue
+
+            test = BookTest(
+                test_type="review_test" if "Review" in test_name else "final_test",
+                test_name=test_name,
+                covers_json=json.dumps(test_data.get("covers", []), ensure_ascii=False),
+            )
+
+            for q in test_data.get("questions", []):
+                question = BookTestQuestion(
+                    question_order=q.get("number", 1),
+                    question_type="multiple_choice",
+                    question_text=q.get("question_text"),
+                    target_word=q.get("highlighted_word", ""),
+                    choices_json=json.dumps(q.get("choices", {}), ensure_ascii=False),
+                    answer=q.get("answer"),
+                )
+                test.questions.append(question)
+
+            self._session.add(test)
+            imported += 1
+
+        self._session.commit()
+        return {"imported": imported}
 
     def list_words(
         self,
@@ -141,15 +205,45 @@ class WordBank:
             stmt = stmt.where(Word.exam_type == exam_type)
         return list(self._session.execute(stmt).scalars().all())
 
+    def _import_quiz(self, quiz_data: dict, *, day_label: str) -> None:
+        """Day Quiz 데이터를 BookTest에 저장."""
+        test_name = f"{day_label} Quiz" if day_label else "Quiz"
+        existing = self._session.execute(
+            select(BookTest).where(BookTest.test_name == test_name)
+        ).scalar_one_or_none()
+        if existing:
+            return
+
+        test = BookTest(
+            test_type="quiz",
+            test_name=test_name,
+            covers_json=json.dumps([day_label] if day_label else [], ensure_ascii=False),
+        )
+
+        for q in quiz_data.get("questions", []):
+            question = BookTestQuestion(
+                question_order=q.get("number", 1),
+                question_type="synonym_matching",
+                target_word=q.get("word", ""),
+                choices_json=json.dumps(
+                    {"label": q.get("choice_label", ""), "text": q.get("choice_text", "")},
+                    ensure_ascii=False,
+                ),
+                answer=q.get("answer_label"),
+            )
+            test.questions.append(question)
+
+        self._session.add(test)
+
     @staticmethod
     def _build_word(entry: dict[str, Any], *, exam_type: str, source: str) -> Word:
-        """JSON 엔트리 → Word ORM 객체 변환."""
+        """JSON 엔트리 -> Word ORM 객체 변환."""
         derivatives = entry.get("derivatives", [])
 
         word = Word(
             english=entry["english"].strip(),
-            pronunciation=entry.get("pronunciation", ""),
-            importance=entry.get("importance", 0),
+            pronunciation=entry.get("pronunciation") or "",
+            frequency=entry.get("frequency", 0),
             derivatives_json=json.dumps(derivatives, ensure_ascii=False),
             exam_type=entry.get("exam_type", exam_type),
             chapter=entry.get("chapter", ""),
@@ -159,13 +253,16 @@ class WordBank:
         )
 
         for m in entry.get("meanings", []):
-            synonyms = m.get("synonyms", [])
+            tested = m.get("tested_synonyms", [])
+            important = m.get("important_synonyms", [])
             meaning = WordMeaning(
                 meaning_order=m.get("order", 1),
                 part_of_speech=m.get("part_of_speech", ""),
                 korean=m.get("korean", ""),
-                synonyms_json=json.dumps(synonyms, ensure_ascii=False),
-                example=m.get("example", ""),
+                tested_synonyms_json=json.dumps(tested, ensure_ascii=False),
+                important_synonyms_json=json.dumps(important, ensure_ascii=False),
+                example_en=m.get("example_en", ""),
+                example_ko=m.get("example_ko") or "",
                 english_definition=m.get("english_definition"),
             )
             word.meanings.append(meaning)

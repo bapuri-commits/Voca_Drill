@@ -1,9 +1,10 @@
 """SQLAlchemy ORM 모델.
 
 Word + WordMeaning 분리 구조:
-- Word: 단어 단위 (english, pronunciation, importance, derivatives...)
-- WordMeaning: 뜻 단위 (word_id FK, part_of_speech, korean, synonyms, example...)
-- 학습 진도(WordProgress)는 Word 단위로 관리
+- Word: 단어 단위 (english, pronunciation, frequency, derivatives...)
+- WordMeaning: 뜻 단위 (tested_synonyms, important_synonyms, example_en/ko...)
+- WordProgress: 학습 진도 (SM-2, 라이트너 단계)
+- BookTest / BookTestQuestion: 교재 테스트 (Quiz, Review TEST, Final TEST)
 """
 
 import uuid
@@ -18,14 +19,14 @@ class Base(DeclarativeBase):
 
 
 class Word(Base):
-    """단어 테이블 — 단어 단위."""
+    """단어 테이블 -- 단어 단위."""
 
     __tablename__ = "words"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     english: Mapped[str] = mapped_column(String, nullable=False, index=True)
     pronunciation: Mapped[str] = mapped_column(String, default="")
-    importance: Mapped[int] = mapped_column(Integer, default=0)
+    frequency: Mapped[int] = mapped_column(Integer, default=0)
     derivatives_json: Mapped[str] = mapped_column(Text, default="[]")
     exam_type: Mapped[str] = mapped_column(String, default="toefl")
     chapter: Mapped[str] = mapped_column(String, default="")
@@ -43,7 +44,7 @@ class Word(Base):
 
 
 class WordMeaning(Base):
-    """뜻 테이블 — Word와 1:N. 뜻마다 다른 동의어 세트."""
+    """뜻 테이블 -- Word와 1:N. 뜻마다 다른 동의어 세트."""
 
     __tablename__ = "word_meanings"
 
@@ -52,15 +53,17 @@ class WordMeaning(Base):
     meaning_order: Mapped[int] = mapped_column(Integer, default=1)
     part_of_speech: Mapped[str] = mapped_column(String, default="")
     korean: Mapped[str] = mapped_column(String, default="")
-    synonyms_json: Mapped[str] = mapped_column(Text, default="[]")
-    example: Mapped[str] = mapped_column(Text, default="")
+    tested_synonyms_json: Mapped[str] = mapped_column(Text, default="[]")
+    important_synonyms_json: Mapped[str] = mapped_column(Text, default="[]")
+    example_en: Mapped[str] = mapped_column(Text, default="")
+    example_ko: Mapped[str] = mapped_column(Text, default="")
     english_definition: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     word: Mapped["Word"] = relationship(back_populates="meanings")
 
 
 class WordProgress(Base):
-    """단어별 학습 진도 — Word와 1:1."""
+    """단어별 학습 진도 -- Word와 1:1."""
 
     __tablename__ = "word_progress"
 
@@ -132,3 +135,35 @@ class DailyStats(Base):
     sessions_count: Mapped[int] = mapped_column(Integer, default=0)
     streak_days: Mapped[int] = mapped_column(Integer, default=0)
     study_time_sec: Mapped[int] = mapped_column(Integer, default=0)
+
+
+class BookTest(Base):
+    """교재 테스트 (Quiz / Review TEST / Final TEST)."""
+
+    __tablename__ = "book_tests"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    test_type: Mapped[str] = mapped_column(String, nullable=False)
+    test_name: Mapped[str] = mapped_column(String, nullable=False)
+    covers_json: Mapped[str] = mapped_column(Text, default="[]")
+
+    questions: Mapped[list["BookTestQuestion"]] = relationship(
+        back_populates="test", cascade="all, delete-orphan", order_by="BookTestQuestion.question_order"
+    )
+
+
+class BookTestQuestion(Base):
+    """교재 테스트 문제."""
+
+    __tablename__ = "book_test_questions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    test_id: Mapped[int] = mapped_column(Integer, ForeignKey("book_tests.id"), nullable=False, index=True)
+    question_order: Mapped[int] = mapped_column(Integer, default=1)
+    question_type: Mapped[str] = mapped_column(String, default="synonym_matching")
+    question_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    target_word: Mapped[str] = mapped_column(String, default="")
+    choices_json: Mapped[str] = mapped_column(Text, default="{}")
+    answer: Mapped[str | None] = mapped_column(String, nullable=True)
+
+    test: Mapped["BookTest"] = relationship(back_populates="questions")
