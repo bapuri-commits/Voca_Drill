@@ -1,9 +1,16 @@
-"""SQLAlchemy ORM 모델."""
+"""SQLAlchemy ORM 모델.
 
-from datetime import datetime
+Word + WordMeaning 분리 구조:
+- Word: 단어 단위 (english, pronunciation, importance, derivatives...)
+- WordMeaning: 뜻 단위 (word_id FK, part_of_speech, korean, synonyms, example...)
+- 학습 진도(WordProgress)는 Word 단위로 관리
+"""
 
-from sqlalchemy import Column, DateTime, Float, Integer, String
-from sqlalchemy.orm import DeclarativeBase
+import uuid
+from datetime import date, datetime
+
+from sqlalchemy import Date, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
 class Base(DeclarativeBase):
@@ -11,40 +18,117 @@ class Base(DeclarativeBase):
 
 
 class Word(Base):
+    """단어 테이블 — 단어 단위."""
+
     __tablename__ = "words"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    english = Column(String, nullable=False, index=True)
-    korean = Column(String, nullable=False)
-    part_of_speech = Column(String, default="")
-    example = Column(String, default="")
-    exam_type = Column(String, default="")
-    group_name = Column(String, default="")
-    difficulty = Column(Integer, default=0)
-    created_at = Column(DateTime, default=datetime.now)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    english: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    pronunciation: Mapped[str] = mapped_column(String, default="")
+    importance: Mapped[int] = mapped_column(Integer, default=0)
+    derivatives_json: Mapped[str] = mapped_column(Text, default="[]")
+    exam_type: Mapped[str] = mapped_column(String, default="toefl")
+    chapter: Mapped[str] = mapped_column(String, default="")
+    word_order: Mapped[int] = mapped_column(Integer, default=0)
+    exam_tip: Mapped[str | None] = mapped_column(Text, nullable=True)
+    source: Mapped[str] = mapped_column(String, default="manual")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
+
+    meanings: Mapped[list["WordMeaning"]] = relationship(
+        back_populates="word", cascade="all, delete-orphan", order_by="WordMeaning.meaning_order"
+    )
+    progress: Mapped["WordProgress | None"] = relationship(
+        back_populates="word", uselist=False, cascade="all, delete-orphan"
+    )
 
 
-class LearningRecord(Base):
-    __tablename__ = "learning_records"
+class WordMeaning(Base):
+    """뜻 테이블 — Word와 1:N. 뜻마다 다른 동의어 세트."""
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    word_id = Column(Integer, nullable=False, index=True)
-    is_correct = Column(Integer, nullable=False)
-    mode = Column(String, default="en2kr")
-    session_id = Column(String, nullable=False)
-    answered_at = Column(DateTime, default=datetime.now)
+    __tablename__ = "word_meanings"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    word_id: Mapped[int] = mapped_column(Integer, ForeignKey("words.id"), nullable=False, index=True)
+    meaning_order: Mapped[int] = mapped_column(Integer, default=1)
+    part_of_speech: Mapped[str] = mapped_column(String, default="")
+    korean: Mapped[str] = mapped_column(String, default="")
+    synonyms_json: Mapped[str] = mapped_column(Text, default="[]")
+    example: Mapped[str] = mapped_column(Text, default="")
+    english_definition: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    word: Mapped["Word"] = relationship(back_populates="meanings")
 
 
 class WordProgress(Base):
+    """단어별 학습 진도 — Word와 1:1."""
+
     __tablename__ = "word_progress"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    word_id = Column(Integer, nullable=False, unique=True, index=True)
-    ease_factor = Column(Float, default=2.5)
-    interval_days = Column(Integer, default=0)
-    repetitions = Column(Integer, default=0)
-    next_review = Column(DateTime, nullable=True)
-    total_attempts = Column(Integer, default=0)
-    correct_count = Column(Integer, default=0)
-    status = Column(String, default="new")
-    updated_at = Column(DateTime, default=datetime.now)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    word_id: Mapped[int] = mapped_column(Integer, ForeignKey("words.id"), nullable=False, unique=True, index=True)
+    ease_factor: Mapped[float] = mapped_column(Float, default=2.5)
+    interval_days: Mapped[int] = mapped_column(Integer, default=0)
+    repetitions: Mapped[int] = mapped_column(Integer, default=0)
+    next_review: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    mastery_level: Mapped[int] = mapped_column(Integer, default=1)
+    quiz_level: Mapped[int] = mapped_column(Integer, default=1)
+    total_attempts: Mapped[int] = mapped_column(Integer, default=0)
+    correct_count: Mapped[int] = mapped_column(Integer, default=0)
+    status: Mapped[str] = mapped_column(String, default="new")
+    first_studied_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, onupdate=datetime.now)
+
+    word: Mapped["Word"] = relationship(back_populates="progress")
+
+
+class LearningSession(Base):
+    """학습 세션."""
+
+    __tablename__ = "learning_sessions"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    started_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
+    ended_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    total_words: Mapped[int] = mapped_column(Integer, default=0)
+    correct_count: Mapped[int] = mapped_column(Integer, default=0)
+    new_words_count: Mapped[int] = mapped_column(Integer, default=0)
+    review_words_count: Mapped[int] = mapped_column(Integer, default=0)
+    max_combo: Mapped[int] = mapped_column(Integer, default=0)
+    status: Mapped[str] = mapped_column(String, default="in_progress")
+
+    records: Mapped[list["LearningRecord"]] = relationship(
+        back_populates="session", cascade="all, delete-orphan"
+    )
+
+
+class LearningRecord(Base):
+    """개별 응답 이력."""
+
+    __tablename__ = "learning_records"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    word_id: Mapped[int] = mapped_column(Integer, ForeignKey("words.id"), nullable=False, index=True)
+    session_id: Mapped[str] = mapped_column(String, ForeignKey("learning_sessions.id"), nullable=False)
+    quiz_type: Mapped[str] = mapped_column(String, default="card_flip")
+    quality: Mapped[int] = mapped_column(Integer, default=0)
+    is_correct: Mapped[int] = mapped_column(Integer, default=0)
+    response_time_ms: Mapped[int] = mapped_column(Integer, default=0)
+    answered_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
+
+    session: Mapped["LearningSession"] = relationship(back_populates="records")
+
+
+class DailyStats(Base):
+    """일일 통계 캐시."""
+
+    __tablename__ = "daily_stats"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    date: Mapped[date] = mapped_column(Date, unique=True, nullable=False)
+    words_studied: Mapped[int] = mapped_column(Integer, default=0)
+    new_words: Mapped[int] = mapped_column(Integer, default=0)
+    review_words: Mapped[int] = mapped_column(Integer, default=0)
+    correct_rate: Mapped[float] = mapped_column(Float, default=0.0)
+    sessions_count: Mapped[int] = mapped_column(Integer, default=0)
+    streak_days: Mapped[int] = mapped_column(Integer, default=0)
+    study_time_sec: Mapped[int] = mapped_column(Integer, default=0)

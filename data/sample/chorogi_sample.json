@@ -1,0 +1,182 @@
+[
+  {
+    "english": "prominent",
+    "pronunciation": "prɑ́mənənt",
+    "importance": 3,
+    "derivatives": ["adv. prominently", "n. prominence"],
+    "chapter": "Day 1",
+    "word_order": 4,
+    "exam_type": "toefl",
+    "exam_tip": null,
+    "meanings": [
+      {
+        "order": 1,
+        "part_of_speech": "adj",
+        "korean": "눈에 띄는",
+        "synonyms": ["noticeable", "conspicuous", "outstanding", "remarkable"],
+        "example": "Mt. Fuji is a prominent natural landmark in Japan."
+      },
+      {
+        "order": 2,
+        "part_of_speech": "adj",
+        "korean": "중요한",
+        "synonyms": ["important", "leading", "notable"],
+        "example": "William Shakespeare is one of the most prominent figures in the history of English literature."
+      }
+    ]
+  },
+  {
+    "english": "replenish",
+    "pronunciation": "riplέniʃ",
+    "importance": 3,
+    "derivatives": [],
+    "chapter": "Day 1",
+    "word_order": 5,
+    "exam_type": "toefl",
+    "exam_tip": "renew는 주로 '새롭게 하다'라는 뜻으로 쓰이지만, '보충하다'라는 뜻으로 사용될 때에는 replenish의 동의어가 될 수 있다.",
+    "meanings": [
+      {
+        "order": 1,
+        "part_of_speech": "v",
+        "korean": "보충하다",
+        "synonyms": ["refill", "restore", "renew"],
+        "example": "The travelers replenished their supplies of water before crossing the desert."
+      }
+    ]
+  },
+  {
+    "english": "ubiquitous",
+    "pronunciation": "juːbíkwətəs",
+    "importance": 2,
+    "derivatives": ["n. ubiquity"],
+    "chapter": "Day 1",
+    "word_order": 1,
+    "exam_type": "toefl",
+    "exam_tip": null,
+    "meanings": [
+      {
+        "order": 1,
+        "part_of_speech": "adj",
+        "korean": "어디에나 있는",
+        "synonyms": ["omnipresent", "pervasive", "universal"],
+        "example": "Smartphones have become ubiquitous in modern society."
+      }
+    ]
+  },
+  {
+    "english": "fluctuate",
+    "pronunciation": "flʌ́ktʃuèit",
+    "importance": 3,
+    "derivatives": ["n. fluctuation"],
+    "chapter": "Day 1",
+    "word_order": 2,
+    "exam_type": "toefl",
+    "exam_tip": null,
+    "meanings": [
+      {
+        "order": 1,
+        "part_of_speech": "v",
+        "korean": "변동하다",
+        "synonyms": ["vary", "oscillate", "waver"],
+        "example": "Oil prices fluctuate depending on global supply and demand."
+      }
+    ]
+  },
+  {
+    "english": "inherent",
+    "pronunciation": "inhíərənt",
+    "importance": 3,
+    "derivatives": ["adv. inherently"],
+    "chapter": "Day 1",
+    "word_order": 3,
+    "exam_type": "toefl",
+    "exam_tip": null,
+    "meanings": [
+      {
+        "order": 1,
+        "part_of_speech": "adj",
+        "korean": "내재하는",
+        "synonyms": ["intrinsic", "innate", "built-in"],
+        "example": "There are inherent risks in any kind of investment."
+      },
+      {
+        "order": 2,
+        "part_of_speech": "adj",
+        "korean": "고유의",
+        "synonyms": ["essential", "fundamental", "natural"],
+        "example": "Curiosity is an inherent trait of human nature."
+      }
+    ]
+  },
+  {
+    "english": "diminish",
+    "pronunciation": "dimíniʃ",
+    "importance": 2,
+    "derivatives": ["n. diminishment"],
+    "chapter": "Day 2",
+    "word_order": 1,
+    "exam_type": "toefl",
+    "exam_tip": null,
+    "meanings": [
+      {
+        "order": 1,
+        "part_of_speech": "v",
+        "korean": "줄이다",
+        "synonyms": ["reduce", "decrease", "lessen"],
+        "example": "The new policy aims to diminish the gap between rich and poor."
+      },
+      {
+        "order": 2,
+        "part_of_speech": "v",
+        "korean": "약화시키다",
+        "synonyms": ["weaken", "undermine"],
+        "example": "His reputation was greatly diminished by the scandal."
+      }
+    ]
+  },
+  {
+    "english": "elaborate",
+    "pronunciation": "ilǽbərèit",
+    "importance": 3,
+    "derivatives": ["adv. elaborately", "n. elaboration"],
+    "chapter": "Day 2",
+    "word_order": 2,
+    "exam_type": "toefl",
+    "exam_tip": "형용사와 동사의 발음이 다르다. 형용사는 [ilǽbərit], 동사는 [ilǽbərèit].",
+    "meanings": [
+      {
+        "order": 1,
+        "part_of_speech": "adj",
+        "korean": "정교한",
+        "synonyms": ["intricate", "detailed", "complex"],
+        "example": "The palace features an elaborate system of gardens and fountains."
+      },
+      {
+        "order": 2,
+        "part_of_speech": "v",
+        "korean": "자세히 설명하다",
+        "synonyms": ["explain", "expand", "clarify"],
+        "example": "Could you elaborate on your proposal?"
+      }
+    ]
+  },
+  {
+    "english": "mundane",
+    "pronunciation": "mʌndéin",
+    "importance": 1,
+    "derivatives": [],
+    "chapter": "Day 2",
+    "word_order": 3,
+    "exam_type": "toefl",
+    "exam_tip": null,
+    "meanings": [
+      {
+        "order": 1,
+        "part_of_speech": "adj",
+        "korean": "평범한",
+        "synonyms": ["ordinary", "routine", "everyday"],
+        "example": "She longed for adventure to escape her mundane daily life."
+      }
+    ]
+  }
+]

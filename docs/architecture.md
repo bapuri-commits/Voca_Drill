@@ -92,6 +92,7 @@ voca_drill/
 | total_attempts | Integer | 총 시도 횟수 |
 | correct_count | Integer | 총 정답 횟수 |
 | status | String | new/learning/review/familiar/mastered |
+| first_studied_at | DateTime | 최초 학습일 (일일 새 단어 제한용) |
 | updated_at | DateTime | 최종 갱신일 |
 
 ### LearningRecord (개별 응답 이력)
@@ -146,9 +147,10 @@ voca_drill/
 - 두 번째 정답: interval = 3일
 - 이후: interval = 이전 interval × ease_factor
 
-**ease_factor 갱신:**
-- `EF' = EF + (0.1 - (3 - quality) × (0.08 + (3 - quality) × 0.02))`
+**ease_factor 갱신 (SM-2 표준, quality는 0-5 스케일로 변환 후 적용):**
+- `EF' = EF + (0.1 - (5 - quality) × (0.08 + (5 - quality) × 0.02))`
 - 최솟값: 1.3
+- 4단계 버튼 → SM-2 quality 매핑: 모름=0, 헷갈림=2, 알겠음=4, 완벽=5
 
 **오답('모름') 시:**
 - interval 리셋 (1일), repetitions 리셋 (0)

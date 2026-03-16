@@ -1,46 +1,158 @@
 """Voca_Drill CLI 진입점."""
 
+from __future__ import annotations
+
+import io
+import json
+import sys
+from pathlib import Path
+
 import typer
+from rich.console import Console
+from rich.table import Table
+
+from .config import load_config
+from .data.database import get_session, init_db
+from .services.wordbank import WordBank
+
+if sys.platform == "win32":
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 
 app = typer.Typer(
     name="drill",
     help="공인영어시험 단어 학습 프로그램",
 )
+wordbank_app = typer.Typer(help="단어장 관리")
+app.add_typer(wordbank_app, name="wordbank")
+
+console = Console(force_terminal=True)
 
 
-@app.command()
-def start(
-    type: str = typer.Option(None, help="시험 유형 (toefl/toeic)"),
-    count: int = typer.Option(20, help="세션 단어 수"),
-    mode: str = typer.Option("en2kr", help="모드 (en2kr/kr2en)"),
-    weak_only: bool = typer.Option(False, help="약점 단어만"),
-    new_only: bool = typer.Option(False, help="새 단어만"),
+def _get_wordbank() -> WordBank:
+    config = load_config()
+    db_path = config["db"]["path"]
+    init_db(db_path)
+    session = get_session(db_path)
+    return WordBank(session)
+
+
+@wordbank_app.command("import")
+def wordbank_import(
+    file: Path = typer.Argument(..., help="JSON 파일 경로", exists=True),
+    exam_type: str = typer.Option("toefl", "--type", "-t", help="시험 유형 (toefl/toeic)"),
 ) -> None:
-    """학습 세션 시작."""
-    typer.echo("start 명령 — 아직 구현되지 않았습니다.")
+    """JSON 파일에서 단어를 DB에 import."""
+    wb = _get_wordbank()
+    result = wb.import_from_json(file, exam_type=exam_type)
+    console.print(
+        f"[green]import 완료[/green]: "
+        f"{result['imported']}개 추가, {result['skipped']}개 스킵 (중복/빈 항목)"
+    )
 
 
-@app.command()
-def review(
-    last: int = typer.Option(1, help="최근 N세션의 오답"),
+@wordbank_app.command("list")
+def wordbank_list(
+    chapter: str | None = typer.Option(None, "--chapter", "-c", help="챕터 필터"),
+    exam_type: str | None = typer.Option(None, "--type", "-t", help="시험 유형"),
+    limit: int = typer.Option(50, "--limit", "-n", help="표시 개수"),
 ) -> None:
-    """오답 복습."""
-    typer.echo("review 명령 — 아직 구현되지 않았습니다.")
+    """등록된 단어 목록 조회."""
+    wb = _get_wordbank()
+    words = wb.list_words(chapter=chapter, exam_type=exam_type, limit=limit)
+
+    if not words:
+        console.print("[yellow]등록된 단어가 없습니다.[/yellow]")
+        return
+
+    table = Table(title=f"단어 목록 ({len(words)}개)")
+    table.add_column("#", style="dim", width=4)
+    table.add_column("단어", style="bold cyan")
+    table.add_column("챕터", width=8)
+    table.add_column("뜻", min_width=20)
+    table.add_column("동의어", min_width=25)
+    table.add_column("★", width=3)
+
+    for w in words:
+        meanings_str = " / ".join(
+            f"[{m.part_of_speech}] {m.korean}" for m in w.meanings
+        )
+        synonyms_all: list[str] = []
+        for m in w.meanings:
+            synonyms_all.extend(json.loads(m.synonyms_json))
+        synonyms_str = ", ".join(synonyms_all[:5])
+        if len(synonyms_all) > 5:
+            synonyms_str += f" (+{len(synonyms_all) - 5})"
+
+        table.add_row(
+            str(w.word_order),
+            w.english,
+            w.chapter,
+            meanings_str,
+            synonyms_str,
+            "★" * w.importance,
+        )
+
+    console.print(table)
+
+    total = wb.count_words(exam_type=exam_type)
+    if total > len(words):
+        console.print(f"[dim]전체 {total}개 중 {len(words)}개 표시[/dim]")
 
 
-@app.command()
-def weak() -> None:
-    """약점 단어 목록."""
-    typer.echo("weak 명령 — 아직 구현되지 않았습니다.")
-
-
-@app.command()
-def stats(
-    today: bool = typer.Option(False, help="오늘 학습만"),
-    type: str = typer.Option(None, help="시험 유형"),
+@wordbank_app.command("chapters")
+def wordbank_chapters(
+    exam_type: str | None = typer.Option(None, "--type", "-t", help="시험 유형"),
 ) -> None:
-    """학습 통계."""
-    typer.echo("stats 명령 — 아직 구현되지 않았습니다.")
+    """등록된 챕터 목록."""
+    wb = _get_wordbank()
+    chapters = wb.get_chapters(exam_type=exam_type)
+
+    if not chapters:
+        console.print("[yellow]등록된 챕터가 없습니다.[/yellow]")
+        return
+
+    for ch in chapters:
+        count = wb.count_words(chapter=ch, exam_type=exam_type)
+        console.print(f"  {ch}: {count}개")
+
+
+@wordbank_app.command("show")
+def wordbank_show(
+    word: str = typer.Argument(..., help="조회할 영어 단어"),
+) -> None:
+    """단어 상세 조회."""
+    wb = _get_wordbank()
+    w = wb.get_word_by_english(word)
+
+    if not w:
+        console.print(f"[red]'{word}' 단어를 찾을 수 없습니다.[/red]")
+        raise typer.Exit(1)
+
+    console.print(f"\n[bold cyan]{w.english}[/bold cyan]  {'★' * w.importance}")
+    if w.pronunciation:
+        console.print(f"  발음: {w.pronunciation}")
+
+    derivatives = json.loads(w.derivatives_json)
+    if derivatives:
+        console.print(f"  파생어: {', '.join(derivatives)}")
+
+    console.print(f"  챕터: {w.chapter} | 순서: {w.word_order} | 시험: {w.exam_type}")
+
+    for m in w.meanings:
+        synonyms = json.loads(m.synonyms_json)
+        console.print(f"\n  [bold]{m.meaning_order}. [{m.part_of_speech}] {m.korean}[/bold]")
+        if synonyms:
+            console.print(f"     동의어: [green]{', '.join(synonyms)}[/green]")
+        if m.example:
+            console.print(f"     예문: [dim]{m.example}[/dim]")
+        if m.english_definition:
+            console.print(f"     영영: {m.english_definition}")
+
+    if w.exam_tip:
+        console.print(f"\n  [yellow]💡 출제 포인트: {w.exam_tip}[/yellow]")
+
+    console.print()
 
 
 if __name__ == "__main__":
