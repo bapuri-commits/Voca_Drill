@@ -21,6 +21,17 @@ venv/
 .vscode/
 .idea/
 
+# PDF (대용량, git에 올리지 않음)
+docs/bookpdf/
+data/chunks/
+
+# Frontend 빌드 결과 (Docker에서 빌드)
+frontend/dist/
+frontend/node_modules/
+
+# 임시 파일
+_tmp_*
+
 # OS
 Thumbs.db
 Desktop.ini

@@ -1,0 +1,58 @@
+import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import Dashboard from './pages/Dashboard';
+import Study from './pages/Study';
+import Words from './pages/Words';
+import Stats from './pages/Stats';
+
+function Nav() {
+  const loc = useLocation();
+  const tabs = [
+    { path: '/', label: 'Home', icon: '📊' },
+    { path: '/study', label: 'Study', icon: '📖' },
+    { path: '/words', label: 'Words', icon: '📝' },
+    { path: '/stats', label: 'Stats', icon: '📈' },
+  ];
+
+  if (loc.pathname === '/study') return null;
+
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 flex justify-around py-2.5 px-1 z-50"
+         style={{ background: 'var(--color-surface)', borderTop: '1px solid var(--color-surface-light)' }}>
+      {tabs.map(t => (
+        <Link key={t.path} to={t.path}
+              className="flex flex-col items-center gap-0.5 text-xs no-underline transition-colors"
+              style={{ color: loc.pathname === t.path ? 'var(--color-primary)' : 'var(--color-text-dim)' }}>
+          <span className="text-lg">{t.icon}</span>
+          <span>{t.label}</span>
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
+function AppContent() {
+  const loc = useLocation();
+  const isStudy = loc.pathname === '/study';
+
+  return (
+    <>
+      <div className={isStudy ? '' : 'pb-16 min-h-screen'}>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/study" element={<Study />} />
+          <Route path="/words" element={<Words />} />
+          <Route path="/stats" element={<Stats />} />
+        </Routes>
+      </div>
+      <Nav />
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
+  );
+}
