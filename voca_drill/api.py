@@ -355,15 +355,16 @@ _PDF_DIR = Path(__file__).resolve().parent.parent / "data" / "pdf"
 
 @app.get("/api/pdf/list")
 def list_pdfs(user_id: int = Depends(get_current_user_id)) -> dict:
-    result: dict = {"full": [], "day": []}
+    result: dict = {"full": [], "day": [], "test": []}
     if not _PDF_DIR.exists():
         return result
     for f in sorted(_PDF_DIR.glob("*.pdf")):
         result["full"].append({"filename": f.name, "size_mb": round(f.stat().st_size / 1024 / 1024, 1)})
-    day_dir = _PDF_DIR / "day"
-    if day_dir.exists():
-        for f in sorted(day_dir.glob("*.pdf")):
-            result["day"].append({"filename": f"day/{f.name}", "label": f.stem, "size_mb": round(f.stat().st_size / 1024 / 1024, 1)})
+    for sub, key in [("day", "day"), ("test", "test")]:
+        sub_dir = _PDF_DIR / sub
+        if sub_dir.exists():
+            for f in sorted(sub_dir.glob("*.pdf")):
+                result[key].append({"filename": f"{sub}/{f.name}", "label": f.stem, "size_mb": round(f.stat().st_size / 1024 / 1024, 1)})
     return result
 
 
