@@ -8,30 +8,40 @@ const TOKEN_KEY = 'voca_token';
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY));
   const [initializing, setInitializing] = useState(true);
+  const [cookieAuth, setCookieAuth] = useState(false);
   const tokenRef = useRef(token);
 
   useEffect(() => { tokenRef.current = token; }, [token]);
 
   useEffect(() => {
-    if (!token) {
-      setInitializing(false);
-      return;
-    }
-    fetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } })
-      .then(res => {
-        if (!res.ok) {
-          localStorage.removeItem(TOKEN_KEY);
-          setToken(null);
+    async function tryAuth() {
+      if (token) {
+        const res = await fetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } }).catch(() => null);
+        if (res?.ok) {
+          setInitializing(false);
+          return;
         }
-      })
-      .catch(() => {})
-      .finally(() => setInitializing(false));
+        localStorage.removeItem(TOKEN_KEY);
+        setToken(null);
+      }
+
+      const cookieRes = await fetch('/api/auth/me', { credentials: 'include' }).catch(() => null);
+      if (cookieRes?.ok) {
+        setCookieAuth(true);
+        setInitializing(false);
+        return;
+      }
+
+      setInitializing(false);
+    }
+    tryAuth();
   }, []);
 
   const login = useCallback(async (username, password) => {
     const res = await fetch(`${SYOPS_AUTH}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ username, password }),
     });
     if (!res.ok) {
@@ -42,18 +52,21 @@ export function AuthProvider({ children }) {
     const accessToken = data.access_token;
     localStorage.setItem(TOKEN_KEY, accessToken);
     setToken(accessToken);
+    setCookieAuth(false);
     return true;
   }, []);
 
   const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY);
     setToken(null);
+    setCookieAuth(false);
   }, []);
 
   const authFetch = useCallback(async (url, options = {}) => {
     const doFetch = (t) =>
       fetch(url, {
         ...options,
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           ...options.headers,
@@ -66,12 +79,13 @@ export function AuthProvider({ children }) {
     if (res.status === 401) {
       localStorage.removeItem(TOKEN_KEY);
       setToken(null);
+      setCookieAuth(false);
     }
 
     return res;
   }, []);
 
-  const authenticated = !!token;
+  const authenticated = !!token || cookieAuth;
 
   return (
     <AuthContext.Provider value={{ authenticated, initializing, login, logout, authFetch, token }}>

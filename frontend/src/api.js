@@ -51,8 +51,16 @@ export const api = {
   getOverall: (examType) => request(`/stats/overall${examType ? `?exam_type=${examType}` : ''}`),
   getStreak: () => request('/stats/streak'),
 
+  getChapterProgress: () => request('/chapters/progress'),
+  getReviewCount: () => request('/study/review-count'),
+
   getBookTests: () => request('/book-tests'),
   getBookTest: (id) => request(`/book-tests/${id}`),
+
+  listBackups: () => request('/backup/list'),
+  createBackup: () => request('/backup/create', { method: 'POST' }),
+  restoreBackup: (filename) => request(`/backup/restore/${filename}`, { method: 'POST' }),
+  deleteBackup: (filename) => request(`/backup/${filename}`, { method: 'DELETE' }),
 
   listPdfs: () => request('/pdf/list'),
 };

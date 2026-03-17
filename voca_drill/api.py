@@ -6,11 +6,12 @@
 from __future__ import annotations
 
 import json
+import shutil
 import uuid as _uuid
 from collections.abc import Generator
 from contextlib import asynccontextmanager
 from dataclasses import asdict
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException, Query, UploadFile
@@ -22,8 +23,8 @@ from sqlalchemy.orm import Session
 
 from .auth import get_current_user_id, get_optional_user_id
 from .config import load_config
-from .data.database import get_session, init_db
-from .data.models import BookTest
+from .data.database import get_session, init_db, reset_engine
+from .data.models import BookTest, Word, WordProgress
 from .services.drill import DrillEngine, SessionContext
 from .services.quiz import QuizGenerator
 from .services.scheduler import Scheduler
@@ -34,9 +35,46 @@ _config = load_config()
 _active_sessions: dict[str, tuple[SessionContext, Session]] = {}
 
 
+MAX_BACKUPS = 10
+BACKUP_INTERVAL_HOURS = 24
+
+
+def _get_backup_dir() -> Path:
+    db_path = Path(_config["db"]["path"]).resolve()
+    backup_dir = db_path.parent / "backups"
+    backup_dir.mkdir(parents=True, exist_ok=True)
+    return backup_dir
+
+
+def _auto_backup() -> None:
+    """서버 시작 시 자동 백업 (마지막 백업이 24시간 이상 지났으면)."""
+    db_path = Path(_config["db"]["path"]).resolve()
+    if not db_path.exists():
+        return
+    backup_dir = _get_backup_dir()
+    existing = sorted(backup_dir.glob("voca_drill_*.db"), reverse=True)
+    if existing:
+        latest_mtime = existing[0].stat().st_mtime
+        hours_since = (datetime.now().timestamp() - latest_mtime) / 3600
+        if hours_since < BACKUP_INTERVAL_HOURS:
+            return
+    stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    dest = backup_dir / f"voca_drill_{stamp}.db"
+    shutil.copy2(str(db_path), str(dest))
+    _prune_backups(backup_dir)
+
+
+def _prune_backups(backup_dir: Path) -> None:
+    """오래된 백업 삭제 (최대 MAX_BACKUPS개 유지)."""
+    existing = sorted(backup_dir.glob("voca_drill_*.db"), reverse=True)
+    for old in existing[MAX_BACKUPS:]:
+        old.unlink(missing_ok=True)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db(_config["db"]["path"])
+    _auto_backup()
     yield
 
 
@@ -134,6 +172,50 @@ async def import_words(file: UploadFile, exam_type: str = "toefl", db: Session =
         tmp_path.unlink(missing_ok=True)
 
 
+# ──────────────────── Study Info API ────────────────────
+
+
+@app.get("/api/chapters/progress")
+def get_chapter_progress(
+    user_id: int = Depends(get_current_user_id),
+    db: Session = Depends(get_db),
+) -> list[dict]:
+    """챕터별 진행률 (인증 필요)."""
+    from sqlalchemy import func
+
+    wb = WordBank(db)
+    chapters = wb.get_chapters()
+
+    result = []
+    for ch in chapters:
+        total = wb.count_words(chapter=ch)
+        studied = (
+            db.query(func.count(WordProgress.id))
+            .join(Word)
+            .filter(Word.chapter == ch, WordProgress.user_id == user_id)
+            .scalar()
+            or 0
+        )
+        result.append({
+            "chapter": ch,
+            "total": total,
+            "studied": studied,
+            "completion_rate": round(studied / total * 100) if total > 0 else 0,
+        })
+    return result
+
+
+@app.get("/api/study/review-count")
+def get_review_count(
+    user_id: int = Depends(get_current_user_id),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Quick Study 복습 대상 단어 수."""
+    scheduler = Scheduler(db, user_id=user_id)
+    words = scheduler.get_review_words_from_completed_days()
+    return {"count": len(words)}
+
+
 # ──────────────────── Sessions API ────────────────────
 
 
@@ -203,6 +285,7 @@ def get_next_word(session_id: str, force_quiz_type: str | None = Query(None)) ->
             "quiz_type": quiz.quiz_type,
             "question": quiz.question,
             "choices": quiz.choices,
+            "correct_answer": quiz.correct_answer,
         },
     }
 
@@ -356,6 +439,77 @@ def get_book_test(test_id: int, db: Session = Depends(get_db)) -> dict:
 @app.get("/api/auth/me")
 def get_me(user_id: int = Depends(get_current_user_id)) -> dict:
     return {"user_id": user_id}
+
+
+# ──────────────────── Backup API ────────────────────
+
+
+@app.get("/api/backup/list")
+def list_backups(user_id: int = Depends(get_current_user_id)) -> list[dict]:
+    backup_dir = _get_backup_dir()
+    result = []
+    for f in sorted(backup_dir.glob("voca_drill_*.db"), reverse=True):
+        stat = f.stat()
+        result.append({
+            "filename": f.name,
+            "size_mb": round(stat.st_size / 1024 / 1024, 2),
+            "created_at": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+        })
+    return result
+
+
+@app.post("/api/backup/create")
+def create_backup(user_id: int = Depends(get_current_user_id)) -> dict:
+    db_path = Path(_config["db"]["path"]).resolve()
+    if not db_path.exists():
+        raise HTTPException(400, "DB 파일이 없습니다")
+    backup_dir = _get_backup_dir()
+    stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    dest = backup_dir / f"voca_drill_{stamp}.db"
+    shutil.copy2(str(db_path), str(dest))
+    _prune_backups(backup_dir)
+    return {
+        "filename": dest.name,
+        "size_mb": round(dest.stat().st_size / 1024 / 1024, 2),
+    }
+
+
+@app.post("/api/backup/restore/{filename}")
+def restore_backup(filename: str, user_id: int = Depends(get_current_user_id)) -> dict:
+    if ".." in filename or "/" in filename or "\\" in filename:
+        raise HTTPException(400, "잘못된 파일명")
+    backup_dir = _get_backup_dir()
+    backup_file = backup_dir / filename
+    if not backup_file.exists() or not backup_file.name.startswith("voca_drill_"):
+        raise HTTPException(404, "백업 파일을 찾을 수 없습니다")
+
+    db_path = Path(_config["db"]["path"]).resolve()
+
+    pre_stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    pre_restore = backup_dir / f"voca_drill_{pre_stamp}_pre_restore.db"
+    if db_path.exists():
+        shutil.copy2(str(db_path), str(pre_restore))
+
+    _active_sessions.clear()
+    reset_engine()
+
+    shutil.copy2(str(backup_file), str(db_path))
+    init_db(_config["db"]["path"])
+
+    _prune_backups(backup_dir)
+    return {"restored": filename, "pre_restore_backup": pre_restore.name}
+
+
+@app.delete("/api/backup/{filename}")
+def delete_backup(filename: str, user_id: int = Depends(get_current_user_id)) -> dict:
+    if ".." in filename or "/" in filename or "\\" in filename:
+        raise HTTPException(400, "잘못된 파일명")
+    backup_dir = _get_backup_dir()
+    backup_file = backup_dir / filename
+    if not backup_file.exists():
+        raise HTTPException(404, "백업 파일을 찾을 수 없습니다")
+    backup_file.unlink()
+    return {"deleted": filename}
 
 
 # ──────────────────── PDF API ────────────────────

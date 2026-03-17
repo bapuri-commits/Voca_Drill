@@ -2,7 +2,9 @@ import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-do
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import StudyHome from './pages/StudyHome';
 import Study from './pages/Study';
+import BookTest from './pages/BookTest';
 import Words from './pages/Words';
 import Stats from './pages/Stats';
 import PdfViewer from './pages/PdfViewer';
@@ -17,7 +19,7 @@ function Nav() {
     { path: '/stats', label: 'Stats', icon: '📈' },
   ];
 
-  if (loc.pathname === '/study') return null;
+  if (loc.pathname === '/study/session') return null;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 flex justify-around py-2.5 px-1 z-50"
@@ -49,14 +51,16 @@ function AuthGate() {
 
   if (!authenticated) return <Login />;
 
-  const isStudy = loc.pathname === '/study';
+  const isSession = loc.pathname === '/study/session';
 
   return (
     <>
-      <div className={isStudy ? '' : 'pb-16 min-h-screen'}>
+      <div className={isSession ? '' : 'pb-16 min-h-screen'}>
         <Routes>
           <Route path="/" element={<Dashboard onLogout={logout} />} />
-          <Route path="/study" element={<Study />} />
+          <Route path="/study" element={<StudyHome />} />
+          <Route path="/study/session" element={<Study />} />
+          <Route path="/study/book-test" element={<BookTest />} />
           <Route path="/words" element={<Words />} />
           <Route path="/pdf" element={<PdfViewer />} />
           <Route path="/stats" element={<Stats />} />

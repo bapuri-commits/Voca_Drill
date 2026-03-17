@@ -24,19 +24,31 @@ export default function Study() {
   const [error, setError] = useState(null);
   const sessionRef = useRef(null);
 
+  const mode = searchParams.get('mode') || 'day';
+  const chapter = searchParams.get('chapter') || null;
+
   const startSession = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
       setSummary(null);
-      const sess = await api.createSession({ size: 15 });
+      const body = {};
+      if (mode === 'day' && chapter) {
+        body.mode = 'day';
+        body.chapter = chapter;
+      } else if (mode === 'review') {
+        body.mode = 'review';
+      } else {
+        body.size = 15;
+      }
+      const sess = await api.createSession(body);
       sessionRef.current = sess.session_id;
       setSessionId(sess.session_id);
     } catch (e) {
       setError(e.message);
       setLoading(false);
     }
-  }, []);
+  }, [mode, chapter]);
 
   const fetchNext = useCallback(async (sid) => {
     try {
@@ -84,9 +96,9 @@ export default function Study() {
       <div className="fixed inset-0 flex flex-col items-center justify-center p-6" style={{ background: 'var(--color-bg)' }}>
         <div className="text-5xl mb-4">:(</div>
         <p className="text-lg mb-6 text-center" style={{ color: 'var(--color-danger)' }}>{error}</p>
-        <button onClick={() => nav('/')} className="px-8 py-3 rounded-xl border-none cursor-pointer font-bold"
+        <button onClick={() => nav('/study')} className="px-8 py-3 rounded-xl border-none cursor-pointer font-bold"
                 style={{ background: 'var(--color-surface-light)', color: 'var(--color-text)' }}>
-          Back Home
+          Back
         </button>
       </div>
     );
@@ -122,7 +134,7 @@ export default function Study() {
                   style={{ background: 'var(--color-primary)', color: '#fff' }}>
             Again
           </button>
-          <button onClick={() => nav('/')}
+          <button onClick={() => nav('/study')}
                   className="px-8 py-3 rounded-xl border-none cursor-pointer font-bold transition-transform active:scale-95"
                   style={{ background: 'var(--color-surface-light)', color: 'var(--color-text)' }}>
             Home
@@ -165,7 +177,13 @@ export default function Study() {
       </div>
 
       {/* Quiz Area — dispatch by quiz_type */}
-      {quizData.quiz_type === 'multiple_choice' || quizData.quiz_type === 'reverse' ? (
+      {quizData.quiz_type === 'typing' ? (
+        <TypingQuiz
+          quizData={quizData}
+          onAnswer={handleAnswer}
+          submitting={submitting}
+        />
+      ) : quizData.quiz_type === 'multiple_choice' || quizData.quiz_type === 'reverse' ? (
         <MultipleChoiceQuiz
           quizData={quizData}
           onAnswer={handleAnswer}
@@ -398,6 +416,143 @@ function MultipleChoiceQuiz({ quizData, onAnswer, submitting }) {
           {revealed
             ? (choices[selected]?.is_correct ? 'Correct!' : 'Wrong — check the answer above')
             : 'Select the correct answer'}
+        </div>
+      </div>
+    </>
+  );
+}
+
+
+function TypingQuiz({ quizData, onAnswer, submitting }) {
+  const [input, setInput] = useState('');
+  const [result, setResult] = useState(null);
+  const [checking, setChecking] = useState(false);
+  const inputRef = useRef(null);
+  const timeoutRef = useRef(null);
+
+  useEffect(() => {
+    setInput('');
+    setResult(null);
+    setChecking(false);
+    setTimeout(() => inputRef.current?.focus(), 100);
+    return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); };
+  }, [quizData]);
+
+  const q = quizData.question;
+  const correctAnswer = quizData.correct_answer;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!input.trim() || checking || result) return;
+
+    setChecking(true);
+    try {
+      const res = await api.checkTyping(correctAnswer, input.trim());
+      setResult(res);
+
+      const quality = res.is_correct ? (res.is_close ? 1 : 2) : 0;
+
+      timeoutRef.current = setTimeout(() => {
+        onAnswer(quality);
+      }, 1500);
+    } catch {
+      setChecking(false);
+    }
+  };
+
+  return (
+    <>
+      <div className="flex-1 flex flex-col items-center justify-center px-4 py-2 overflow-hidden">
+        <div className="w-full max-w-sm">
+          <div className="rounded-2xl p-6 mb-6 text-center" style={{ background: 'var(--color-surface)' }}>
+            <div className="text-xs mb-3 uppercase tracking-wider" style={{ color: 'var(--color-text-dim)' }}>
+              Type the word
+            </div>
+            {q.synonyms?.length > 0 && (
+              <div className="text-lg font-bold mb-2" style={{ color: 'var(--color-primary)' }}>
+                {q.synonyms.join(', ')}
+              </div>
+            )}
+            {q.korean && (
+              <div className="text-base mb-2" style={{ color: 'var(--color-text-dim)' }}>
+                {q.korean}
+              </div>
+            )}
+            {q.part_of_speech && (
+              <div className="text-xs" style={{ color: 'var(--color-text-dim)', opacity: 0.6 }}>
+                {q.part_of_speech} · {q.hint_length} letters
+              </div>
+            )}
+          </div>
+
+          <form onSubmit={handleSubmit}>
+            <input
+              ref={inputRef}
+              type="text"
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              disabled={!!result || submitting}
+              placeholder="Enter the word..."
+              autoComplete="off"
+              autoCapitalize="off"
+              spellCheck="false"
+              className="w-full px-5 py-4 rounded-xl text-lg text-center font-semibold outline-none transition-all border-2"
+              style={{
+                background: 'var(--color-surface)',
+                color: 'var(--color-text)',
+                borderColor: result
+                  ? result.is_correct ? '#22c55e' : '#ef4444'
+                  : 'transparent',
+              }}
+            />
+
+            {!result && (
+              <button
+                type="submit"
+                disabled={!input.trim() || checking || submitting}
+                className="w-full mt-3 py-3.5 rounded-xl border-none cursor-pointer font-bold text-white transition-all active:scale-95 disabled:opacity-40"
+                style={{ background: 'var(--color-primary)' }}
+              >
+                {checking ? 'Checking...' : 'Check'}
+              </button>
+            )}
+          </form>
+
+          {result && (
+            <div className="mt-4 rounded-xl p-4 text-center" style={{
+              background: result.is_correct ? 'rgba(34, 197, 94, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+            }}>
+              {result.is_correct ? (
+                <>
+                  <div className="text-2xl mb-1">{result.is_close ? '🤏' : '✅'}</div>
+                  <div className="font-bold" style={{ color: '#22c55e' }}>
+                    {result.is_close ? 'Close enough!' : 'Correct!'}
+                  </div>
+                  {result.is_close && (
+                    <div className="text-sm mt-1" style={{ color: 'var(--color-text-dim)' }}>
+                      Exact: <strong>{result.correct_answer}</strong>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  <div className="text-2xl mb-1">❌</div>
+                  <div className="font-bold" style={{ color: '#ef4444' }}>Wrong</div>
+                  <div className="text-sm mt-1" style={{ color: 'var(--color-text-dim)' }}>
+                    Answer: <strong>{result.correct_answer}</strong>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="px-4 pb-6 pt-2 flex-shrink-0">
+        <div className="text-center text-sm py-3" style={{ color: 'var(--color-surface-light)' }}>
+          {result
+            ? (result.is_correct ? 'Moving on...' : `The answer was "${result.correct_answer}"`)
+            : 'Type the English word and press Check'}
         </div>
       </div>
     </>
