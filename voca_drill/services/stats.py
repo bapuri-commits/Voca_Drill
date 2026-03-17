@@ -91,8 +91,9 @@ LEVEL_LABELS = {
 class StatsTracker:
     """학습 통계를 계산하고 캐시."""
 
-    def __init__(self, session: Session) -> None:
+    def __init__(self, session: Session, user_id: int = 1) -> None:
         self._session = session
+        self._user_id = user_id
 
     def get_session_stats(self, session_id: str) -> SessionStatsResult | None:
         """특정 세션의 통계."""
@@ -128,6 +129,7 @@ class StatsTracker:
         sessions = (
             self._session.query(LearningSession)
             .filter(
+                LearningSession.user_id == self._user_id,
                 LearningSession.started_at >= day_start,
                 LearningSession.started_at < day_end,
             )
@@ -164,7 +166,7 @@ class StatsTracker:
         studied = (
             self._session.query(WordProgress)
             .join(Word)
-            .filter(Word.id == WordProgress.word_id)
+            .filter(Word.id == WordProgress.word_id, WordProgress.user_id == self._user_id)
         )
         if exam_type:
             studied = studied.filter(Word.exam_type == exam_type)
@@ -197,6 +199,7 @@ class StatsTracker:
             has_session = (
                 self._session.query(LearningSession)
                 .filter(
+                    LearningSession.user_id == self._user_id,
                     LearningSession.started_at >= day_start,
                     LearningSession.started_at < day_end,
                     LearningSession.status == "completed",

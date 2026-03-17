@@ -1,15 +1,21 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { setAuthFetch } from './api';
+import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Study from './pages/Study';
 import Words from './pages/Words';
 import Stats from './pages/Stats';
+import PdfViewer from './pages/PdfViewer';
 
 function Nav() {
   const loc = useLocation();
   const tabs = [
-    { path: '/', label: 'Home', icon: '📊' },
+    { path: '/', label: 'Home', icon: '🏠' },
     { path: '/study', label: 'Study', icon: '📖' },
     { path: '/words', label: 'Words', icon: '📝' },
+    { path: '/pdf', label: 'Book', icon: '📚' },
     { path: '/stats', label: 'Stats', icon: '📈' },
   ];
 
@@ -30,17 +36,35 @@ function Nav() {
   );
 }
 
-function AppContent() {
+function AuthGate() {
+  const { authenticated, initializing, authFetch, logout } = useAuth();
   const loc = useLocation();
+
+  useEffect(() => {
+    if (authFetch) setAuthFetch(authFetch);
+  }, [authFetch]);
+
+  if (initializing) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center" style={{ background: 'var(--color-bg)' }}>
+        <div className="w-8 h-8 rounded-full border-3 border-t-transparent animate-spin"
+             style={{ borderColor: 'var(--color-primary)', borderTopColor: 'transparent' }} />
+      </div>
+    );
+  }
+
+  if (!authenticated) return <Login />;
+
   const isStudy = loc.pathname === '/study';
 
   return (
     <>
       <div className={isStudy ? '' : 'pb-16 min-h-screen'}>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<Dashboard onLogout={logout} />} />
           <Route path="/study" element={<Study />} />
           <Route path="/words" element={<Words />} />
+          <Route path="/pdf" element={<PdfViewer />} />
           <Route path="/stats" element={<Stats />} />
         </Routes>
       </div>
@@ -52,7 +76,9 @@ function AppContent() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AppContent />
+      <AuthProvider>
+        <AuthGate />
+      </AuthProvider>
     </BrowserRouter>
   );
 }

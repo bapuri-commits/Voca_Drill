@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { api } from '../api';
 
 const QUALITY_BUTTONS = [
@@ -11,9 +11,10 @@ const QUALITY_BUTTONS = [
 
 export default function Study() {
   const nav = useNavigate();
+  const [searchParams] = useSearchParams();
+  const forceQuizType = searchParams.get('quiz') || null;
   const [sessionId, setSessionId] = useState(null);
   const [quizData, setQuizData] = useState(null);
-  const [flipped, setFlipped] = useState(false);
   const [remaining, setRemaining] = useState(0);
   const [answered, setAnswered] = useState(0);
   const [combo, setCombo] = useState(0);
@@ -39,7 +40,7 @@ export default function Study() {
 
   const fetchNext = useCallback(async (sid) => {
     try {
-      const data = await api.getNext(sid);
+      const data = await api.getNext(sid, forceQuizType);
       if (data.complete) {
         const result = await api.finishSession(sid);
         setSummary(result);
@@ -49,14 +50,13 @@ export default function Study() {
         setRemaining(data.remaining);
         setAnswered(data.answered);
         setCombo(data.combo);
-        setFlipped(false);
       }
       setLoading(false);
     } catch (e) {
       setError(e.message);
       setLoading(false);
     }
-  }, []);
+  }, [forceQuizType]);
 
   useEffect(() => { startSession(); }, [startSession]);
   useEffect(() => { if (sessionId) fetchNext(sessionId); }, [sessionId, fetchNext]);
@@ -79,7 +79,6 @@ export default function Study() {
     setSubmitting(false);
   };
 
-  // Error
   if (error) {
     return (
       <div className="fixed inset-0 flex flex-col items-center justify-center p-6" style={{ background: 'var(--color-bg)' }}>
@@ -93,7 +92,6 @@ export default function Study() {
     );
   }
 
-  // Summary
   if (summary) {
     const rate = summary.total_words ? Math.round((summary.correct_count / summary.total_words) * 100) : 0;
     return (
@@ -134,7 +132,6 @@ export default function Study() {
     );
   }
 
-  // Loading
   if (loading || !quizData) {
     return (
       <div className="fixed inset-0 flex items-center justify-center" style={{ background: 'var(--color-bg)' }}>
@@ -147,10 +144,6 @@ export default function Study() {
     );
   }
 
-  const q = quizData.question;
-  const front = q.front || {};
-  const back = q.back || {};
-  const meanings = back.meanings || [];
   const total = answered + remaining;
 
   return (
@@ -171,16 +164,45 @@ export default function Study() {
         </div>
       </div>
 
-      {/* Card Area */}
+      {/* Quiz Area — dispatch by quiz_type */}
+      {quizData.quiz_type === 'multiple_choice' || quizData.quiz_type === 'reverse' ? (
+        <MultipleChoiceQuiz
+          quizData={quizData}
+          onAnswer={handleAnswer}
+          submitting={submitting}
+        />
+      ) : (
+        <CardFlipQuiz
+          quizData={quizData}
+          onAnswer={handleAnswer}
+          submitting={submitting}
+        />
+      )}
+    </div>
+  );
+}
+
+
+function CardFlipQuiz({ quizData, onAnswer, submitting }) {
+  const [flipped, setFlipped] = useState(false);
+
+  useEffect(() => { setFlipped(false); }, [quizData]);
+
+  const q = quizData.question;
+  const front = q.front || {};
+  const back = q.back || {};
+  const meanings = back.meanings || [];
+
+  return (
+    <>
       <div className="flex-1 flex items-center justify-center px-4 py-2 overflow-hidden"
            onClick={() => !flipped && setFlipped(true)}>
-        <div className="w-full max-w-sm perspective-1000">
-          <div className={`relative w-full min-h-[340px] transition-transform duration-500 transform-style-3d ${flipped ? 'rotate-y-180' : ''}`}
-               style={{ transformStyle: 'preserve-3d', transition: 'transform 0.5s ease' ,
+        <div className="w-full max-w-sm">
+          <div className="relative w-full min-h-[340px]"
+               style={{ transformStyle: 'preserve-3d', transition: 'transform 0.5s ease',
                         transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}>
 
-            {/* Front Face */}
-            <div className="absolute inset-0 rounded-2xl p-6 flex flex-col items-center justify-center backface-hidden"
+            <div className="absolute inset-0 rounded-2xl p-6 flex flex-col items-center justify-center"
                  style={{ background: 'var(--color-surface)', backfaceVisibility: 'hidden' }}>
               <div className="text-4xl font-bold mb-3">{front.english}</div>
               {front.pronunciation && (
@@ -190,8 +212,7 @@ export default function Study() {
               <div className="mt-10 text-sm" style={{ color: 'var(--color-surface-light)' }}>Tap to flip</div>
             </div>
 
-            {/* Back Face */}
-            <div className="absolute inset-0 rounded-2xl p-5 overflow-y-auto backface-hidden"
+            <div className="absolute inset-0 rounded-2xl p-5 overflow-y-auto"
                  style={{ background: 'var(--color-surface)', backfaceVisibility: 'hidden',
                           transform: 'rotateY(180deg)' }}>
               <div className="text-lg font-bold mb-3 text-center" style={{ color: 'var(--color-text-dim)' }}>
@@ -205,7 +226,6 @@ export default function Study() {
                     )}
                     <span className="text-xs" style={{ color: 'var(--color-text-dim)' }}>[{m.part_of_speech}]</span>
                   </div>
-
                   {m.tested_synonyms?.length > 0 && (
                     <div className="text-base font-bold mt-0.5" style={{ color: 'var(--color-primary)' }}>
                       {m.tested_synonyms.join(', ')}
@@ -235,14 +255,13 @@ export default function Study() {
         </div>
       </div>
 
-      {/* Answer Buttons (Thumb Zone) */}
       <div className="px-4 pb-6 pt-2 flex-shrink-0">
         {flipped ? (
           <div className="grid grid-cols-4 gap-2">
             {QUALITY_BUTTONS.map(btn => (
               <button
                 key={btn.quality}
-                onClick={() => handleAnswer(btn.quality)}
+                onClick={() => onAnswer(btn.quality)}
                 disabled={submitting}
                 className="py-3.5 rounded-xl border-none cursor-pointer font-bold text-white text-sm transition-all active:scale-95 disabled:opacity-50"
                 style={{ background: btn.color }}
@@ -258,9 +277,133 @@ export default function Study() {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }
+
+
+function MultipleChoiceQuiz({ quizData, onAnswer, submitting }) {
+  const [selected, setSelected] = useState(null);
+  const [revealed, setRevealed] = useState(false);
+  const timeoutRef = useRef(null);
+
+  useEffect(() => {
+    setSelected(null);
+    setRevealed(false);
+    return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); };
+  }, [quizData]);
+
+  const q = quizData.question;
+  const choices = quizData.choices || [];
+  const isReverse = quizData.quiz_type === 'reverse';
+
+  const handleSelect = (choice, idx) => {
+    if (revealed || submitting) return;
+    setSelected(idx);
+    setRevealed(true);
+
+    const quality = choice.is_correct ? 2 : 0;
+
+    timeoutRef.current = setTimeout(() => {
+      onAnswer(quality);
+    }, 1200);
+  };
+
+  const getChoiceStyle = (choice, idx) => {
+    if (!revealed) {
+      return {
+        background: 'var(--color-surface)',
+        borderColor: 'var(--color-surface-light)',
+        color: 'var(--color-text)',
+      };
+    }
+    if (choice.is_correct) {
+      return {
+        background: 'rgba(34, 197, 94, 0.15)',
+        borderColor: '#22c55e',
+        color: '#22c55e',
+      };
+    }
+    if (idx === selected) {
+      return {
+        background: 'rgba(239, 68, 68, 0.15)',
+        borderColor: '#ef4444',
+        color: '#ef4444',
+      };
+    }
+    return {
+      background: 'var(--color-surface)',
+      borderColor: 'var(--color-surface-light)',
+      color: 'var(--color-text-dim)',
+      opacity: 0.4,
+    };
+  };
+
+  return (
+    <>
+      <div className="flex-1 flex flex-col items-center justify-center px-4 py-2 overflow-hidden">
+        <div className="w-full max-w-sm">
+          {/* Prompt area */}
+          <div className="rounded-2xl p-6 mb-6 text-center" style={{ background: 'var(--color-surface)' }}>
+            {isReverse ? (
+              <>
+                <div className="text-xs mb-2 uppercase tracking-wider" style={{ color: 'var(--color-text-dim)' }}>
+                  {q.prompt_type === 'english_definition' ? 'Definition' : 'Synonyms'}
+                </div>
+                <div className="text-lg font-semibold leading-relaxed">{q.prompt}</div>
+              </>
+            ) : (
+              <>
+                {q.synonyms?.length > 0 && (
+                  <div className="text-lg font-bold mb-3" style={{ color: 'var(--color-primary)' }}>
+                    {q.synonyms.join(', ')}
+                  </div>
+                )}
+                {q.korean && (
+                  <div className="text-base" style={{ color: 'var(--color-text-dim)' }}>{q.korean}</div>
+                )}
+                <div className="text-xs mt-3 uppercase tracking-wider" style={{ color: 'var(--color-text-dim)', opacity: 0.6 }}>
+                  Choose the correct word
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Choices */}
+          <div className="flex flex-col gap-3">
+            {choices.map((choice, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleSelect(choice, idx)}
+                disabled={revealed || submitting}
+                className="w-full py-4 px-5 rounded-xl text-left text-base font-semibold border-2 cursor-pointer transition-all duration-300 active:scale-[0.98] disabled:cursor-default"
+                style={getChoiceStyle(choice, idx)}
+              >
+                <span className="mr-3 opacity-50">{String.fromCharCode(65 + idx)}.</span>
+                {choice.word}
+                {revealed && choice.is_correct && (
+                  <span className="float-right text-lg">✓</span>
+                )}
+                {revealed && idx === selected && !choice.is_correct && (
+                  <span className="float-right text-lg">✗</span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="px-4 pb-6 pt-2 flex-shrink-0">
+        <div className="text-center text-sm py-3" style={{ color: 'var(--color-surface-light)' }}>
+          {revealed
+            ? (choices[selected]?.is_correct ? 'Correct!' : 'Wrong — check the answer above')
+            : 'Select the correct answer'}
+        </div>
+      </div>
+    </>
+  );
+}
+
 
 function Stat({ label, value }) {
   return (

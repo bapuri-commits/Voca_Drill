@@ -35,8 +35,9 @@ class ReviewResult:
 class Scheduler:
     """SM-2 기반 복습 스케줄러."""
 
-    def __init__(self, session: Session) -> None:
+    def __init__(self, session: Session, user_id: int = 1) -> None:
         self._session = session
+        self._user_id = user_id
 
     def process_answer(self, word_id: int, quality: int) -> ReviewResult:
         """사용자 응답 처리 → WordProgress 갱신.
@@ -72,6 +73,7 @@ class Scheduler:
             self._session.query(Word)
             .join(WordProgress)
             .filter(
+                WordProgress.user_id == self._user_id,
                 WordProgress.next_review <= now,
                 WordProgress.status != "new",
             )
@@ -93,7 +95,7 @@ class Scheduler:
 
         today_new_count = (
             self._session.query(WordProgress)
-            .filter(WordProgress.first_studied_at >= today_start)
+            .filter(WordProgress.user_id == self._user_id, WordProgress.first_studied_at >= today_start)
             .count()
         )
 
@@ -103,7 +105,7 @@ class Scheduler:
 
         query = (
             self._session.query(Word)
-            .outerjoin(WordProgress)
+            .outerjoin(WordProgress, (WordProgress.word_id == Word.id) & (WordProgress.user_id == self._user_id))
             .filter(WordProgress.id.is_(None))
             .order_by(Word.chapter, Word.word_order)
         )
@@ -115,11 +117,11 @@ class Scheduler:
         """WordProgress 조회 또는 생성."""
         progress = (
             self._session.query(WordProgress)
-            .filter(WordProgress.word_id == word_id)
+            .filter(WordProgress.word_id == word_id, WordProgress.user_id == self._user_id)
             .first()
         )
         if not progress:
-            progress = WordProgress(word_id=word_id)
+            progress = WordProgress(word_id=word_id, user_id=self._user_id)
             self._session.add(progress)
             self._session.flush()
         return progress

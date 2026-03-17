@@ -59,6 +59,7 @@ class DrillEngine:
         random.shuffle(all_words)
 
         learning_session = LearningSession(
+            user_id=self._scheduler._user_id,
             total_words=len(all_words),
             new_words_count=len(new_words),
             review_words_count=len(review_words),

@@ -10,7 +10,7 @@ Word + WordMeaning 분리 구조:
 import uuid
 from datetime import date, datetime
 
-from sqlalchemy import Date, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import Date, DateTime, Float, ForeignKey, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -63,12 +63,14 @@ class WordMeaning(Base):
 
 
 class WordProgress(Base):
-    """단어별 학습 진도 -- Word와 1:1."""
+    """단어별 학습 진도 -- Word + User 조합으로 1:1."""
 
     __tablename__ = "word_progress"
+    __table_args__ = (UniqueConstraint("word_id", "user_id", name="uq_word_user"),)
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    word_id: Mapped[int] = mapped_column(Integer, ForeignKey("words.id"), nullable=False, unique=True, index=True)
+    word_id: Mapped[int] = mapped_column(Integer, ForeignKey("words.id"), nullable=False, index=True)
+    user_id: Mapped[int] = mapped_column(Integer, default=1, index=True)
     ease_factor: Mapped[float] = mapped_column(Float, default=2.5)
     interval_days: Mapped[int] = mapped_column(Integer, default=0)
     repetitions: Mapped[int] = mapped_column(Integer, default=0)
@@ -90,6 +92,7 @@ class LearningSession(Base):
     __tablename__ = "learning_sessions"
 
     id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id: Mapped[int] = mapped_column(Integer, default=1, index=True)
     started_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
     ended_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     total_words: Mapped[int] = mapped_column(Integer, default=0)
@@ -127,7 +130,8 @@ class DailyStats(Base):
     __tablename__ = "daily_stats"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    date: Mapped[date] = mapped_column(Date, unique=True, nullable=False)
+    user_id: Mapped[int] = mapped_column(Integer, default=1, index=True)
+    date: Mapped[date] = mapped_column(Date, nullable=False)
     words_studied: Mapped[int] = mapped_column(Integer, default=0)
     new_words: Mapped[int] = mapped_column(Integer, default=0)
     review_words: Mapped[int] = mapped_column(Integer, default=0)

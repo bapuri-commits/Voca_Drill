@@ -15,10 +15,12 @@ from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
+from .auth import get_current_user_id
 from .config import load_config
 from .data.database import get_session, init_db
 from .data.models import BookTest
@@ -134,9 +136,9 @@ async def import_words(file: UploadFile, exam_type: str = "toefl", db: Session =
 
 
 @app.post("/api/sessions")
-def create_session(req: SessionCreateRequest) -> dict:
+def create_session(req: SessionCreateRequest, user_id: int = Depends(get_current_user_id)) -> dict:
     db = get_session(_config["db"]["path"])
-    scheduler = Scheduler(db)
+    scheduler = Scheduler(db, user_id=user_id)
     engine = DrillEngine(db, scheduler)
     ctx = engine.create_session(
         size=req.size,
@@ -167,7 +169,7 @@ def _get_active_session(session_id: str) -> tuple[SessionContext, Session]:
 
 
 @app.get("/api/sessions/{session_id}/next")
-def get_next_word(session_id: str) -> dict:
+def get_next_word(session_id: str, force_quiz_type: str | None = Query(None)) -> dict:
     ctx, db = _get_active_session(session_id)
 
     if ctx.is_complete():
@@ -178,7 +180,7 @@ def get_next_word(session_id: str) -> dict:
         return {"complete": True, "remaining": 0}
 
     quiz_gen = QuizGenerator(db)
-    quiz = quiz_gen.generate(word)
+    quiz = quiz_gen.generate(word, force_quiz_type)
 
     return {
         "complete": False,
@@ -234,8 +236,9 @@ def finish_session(session_id: str) -> dict:
     if summary is None:
         raise HTTPException(400, "세션 종료 실패")
 
+    user_id = ctx.learning_session.user_id if ctx.learning_session else 1
     with get_session(_config["db"]["path"]) as stats_db:
-        StatsTracker(stats_db).update_daily_cache()
+        StatsTracker(stats_db, user_id=user_id).update_daily_cache()
 
     return summary
 
@@ -273,23 +276,23 @@ def check_typing(req: TypingCheckRequest, db: Session = Depends(get_db)) -> dict
 
 
 @app.get("/api/stats/daily")
-def get_daily_stats(target_date: str | None = Query(None), db: Session = Depends(get_db)) -> dict:
+def get_daily_stats(target_date: str | None = Query(None), db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id)) -> dict:
     d = date.fromisoformat(target_date) if target_date else None
-    stats = StatsTracker(db)
+    stats = StatsTracker(db, user_id=user_id)
     result = stats.get_daily_stats(d)
     return asdict(result)
 
 
 @app.get("/api/stats/overall")
-def get_overall_progress(exam_type: str | None = Query(None), db: Session = Depends(get_db)) -> dict:
-    stats = StatsTracker(db)
+def get_overall_progress(exam_type: str | None = Query(None), db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id)) -> dict:
+    stats = StatsTracker(db, user_id=user_id)
     result = stats.get_overall_progress(exam_type=exam_type)
     return asdict(result)
 
 
 @app.get("/api/stats/streak")
-def get_streak(db: Session = Depends(get_db)) -> dict:
-    stats = StatsTracker(db)
+def get_streak(db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id)) -> dict:
+    stats = StatsTracker(db, user_id=user_id)
     return {"streak_days": stats.get_streak()}
 
 
@@ -335,6 +338,39 @@ def get_book_test(test_id: int, db: Session = Depends(get_db)) -> dict:
             for q in test.questions
         ],
     }
+
+
+# ──────────────────── Auth API ────────────────────
+
+
+@app.get("/api/auth/me")
+def get_me(user_id: int = Depends(get_current_user_id)) -> dict:
+    return {"user_id": user_id}
+
+
+# ──────────────────── PDF API ────────────────────
+
+_PDF_DIR = Path(__file__).resolve().parent.parent / "data" / "pdf"
+
+
+@app.get("/api/pdf/list")
+def list_pdfs(user_id: int = Depends(get_current_user_id)) -> list[dict]:
+    if not _PDF_DIR.exists():
+        return []
+    return [
+        {"filename": f.name, "size_mb": round(f.stat().st_size / 1024 / 1024, 1)}
+        for f in sorted(_PDF_DIR.glob("*.pdf"))
+    ]
+
+
+@app.get("/api/pdf/{filename}")
+def serve_pdf(filename: str, user_id: int = Depends(get_current_user_id)):
+    path = (_PDF_DIR / filename).resolve()
+    if not str(path).startswith(str(_PDF_DIR.resolve())):
+        raise HTTPException(403, "접근 금지")
+    if not path.exists() or path.suffix != ".pdf":
+        raise HTTPException(404, "PDF를 찾을 수 없습니다")
+    return FileResponse(path, media_type="application/pdf")
 
 
 # ──────────────────── Helpers ────────────────────

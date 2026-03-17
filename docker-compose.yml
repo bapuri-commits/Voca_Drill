@@ -9,3 +9,5 @@ services:
       - /opt/data/voca-drill:/app/data
     env_file:
       - /opt/envs/voca-drill.env
+    environment:
+      - SYOPS_SECRET_KEY=${SYOPS_SECRET_KEY:-dev-secret}

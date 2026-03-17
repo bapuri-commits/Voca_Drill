@@ -1,7 +1,15 @@
 const BASE = '/api';
 
+let _authFetch = null;
+
+export function setAuthFetch(fn) {
+  _authFetch = fn;
+}
+
 async function request(path, options = {}) {
-  const res = await fetch(`${BASE}${path}`, {
+  const url = `${BASE}${path}`;
+  const fetchFn = _authFetch || fetch;
+  const res = await fetchFn(url, {
     headers: { 'Content-Type': 'application/json', ...options.headers },
     ...options,
   });
@@ -13,7 +21,6 @@ async function request(path, options = {}) {
 }
 
 export const api = {
-  // Words
   getWords: (params = {}) => {
     const qs = new URLSearchParams(params).toString();
     return request(`/words?${qs}`);
@@ -21,13 +28,14 @@ export const api = {
   getWord: (id) => request(`/words/${id}`),
   getChapters: () => request('/words/chapters'),
 
-  // Sessions
   createSession: (body) => request('/sessions', { method: 'POST', body: JSON.stringify(body) }),
-  getNext: (sid) => request(`/sessions/${sid}/next`),
+  getNext: (sid, forceQuizType) => {
+    const qs = forceQuizType ? `?force_quiz_type=${forceQuizType}` : '';
+    return request(`/sessions/${sid}/next${qs}`);
+  },
   submitAnswer: (sid, body) => request(`/sessions/${sid}/answer`, { method: 'POST', body: JSON.stringify(body) }),
   finishSession: (sid) => request(`/sessions/${sid}/finish`, { method: 'POST', body: JSON.stringify({}) }),
 
-  // Quiz
   getQuiz: (wordId, quizType) => {
     const qs = quizType ? `?quiz_type=${quizType}` : '';
     return request(`/quiz/${wordId}${qs}`);
@@ -35,12 +43,12 @@ export const api = {
   checkTyping: (correct, userInput) =>
     request('/quiz/typing/check', { method: 'POST', body: JSON.stringify({ correct, user_input: userInput }) }),
 
-  // Stats
   getDailyStats: (date) => request(`/stats/daily${date ? `?target_date=${date}` : ''}`),
   getOverall: (examType) => request(`/stats/overall${examType ? `?exam_type=${examType}` : ''}`),
   getStreak: () => request('/stats/streak'),
 
-  // Book Tests
   getBookTests: () => request('/book-tests'),
   getBookTest: (id) => request(`/book-tests/${id}`),
+
+  listPdfs: () => request('/pdf/list'),
 };
