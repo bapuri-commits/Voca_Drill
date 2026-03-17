@@ -113,6 +113,43 @@ class Scheduler:
             query = query.filter(Word.exam_type == exam_type)
         return list(query.limit(min(remaining, limit)).all())
 
+    def get_review_words_from_completed_days(self, *, limit: int = 200) -> list[Word]:
+        """진행률 100% Day에서 복습 대상 단어만 반환."""
+        from sqlalchemy import func
+
+        all_chapters = (
+            self._session.query(Word.chapter, func.count(Word.id).label("total"))
+            .group_by(Word.chapter)
+            .all()
+        )
+
+        completed_chapters = []
+        for chapter, total in all_chapters:
+            studied = (
+                self._session.query(func.count(WordProgress.id))
+                .join(Word)
+                .filter(Word.chapter == chapter, WordProgress.user_id == self._user_id)
+                .scalar() or 0
+            )
+            if studied >= total:
+                completed_chapters.append(chapter)
+
+        if not completed_chapters:
+            return []
+
+        now = datetime.now()
+        query = (
+            self._session.query(Word)
+            .join(WordProgress)
+            .filter(
+                WordProgress.user_id == self._user_id,
+                WordProgress.next_review <= now,
+                Word.chapter.in_(completed_chapters),
+            )
+            .order_by(WordProgress.next_review)
+        )
+        return list(query.limit(limit).all())
+
     def _get_or_create_progress(self, word_id: int) -> WordProgress:
         """WordProgress 조회 또는 생성."""
         progress = (

@@ -18,6 +18,54 @@ class DrillEngine:
         self._session = session
         self._scheduler = scheduler
 
+    def create_day_session(self, *, chapter: str) -> SessionContext:
+        """Day Study 세션 — 해당 Day 전체 단어, SM-2 필터 없이."""
+        from .wordbank import WordBank
+        wb = WordBank(self._session)
+        all_words = wb.list_words(chapter=chapter, limit=500)
+
+        if not all_words:
+            return SessionContext(engine=self, learning_session=None, words=[], review_ids=set())
+
+        random.shuffle(all_words)
+
+        learning_session = LearningSession(
+            user_id=self._scheduler._user_id,
+            total_words=len(all_words),
+            new_words_count=0,
+            review_words_count=len(all_words),
+        )
+        self._session.add(learning_session)
+        self._session.commit()
+
+        return SessionContext(
+            engine=self, learning_session=learning_session,
+            words=all_words, review_ids={w.id for w in all_words},
+        )
+
+    def create_review_session(self) -> SessionContext:
+        """Quick Study 세션 — 진행률 100% Day의 복습 대상만."""
+        review_words = self._scheduler.get_review_words_from_completed_days()
+
+        if not review_words:
+            return SessionContext(engine=self, learning_session=None, words=[], review_ids=set())
+
+        random.shuffle(review_words)
+
+        learning_session = LearningSession(
+            user_id=self._scheduler._user_id,
+            total_words=len(review_words),
+            new_words_count=0,
+            review_words_count=len(review_words),
+        )
+        self._session.add(learning_session)
+        self._session.commit()
+
+        return SessionContext(
+            engine=self, learning_session=learning_session,
+            words=review_words, review_ids={w.id for w in review_words},
+        )
+
     def create_session(
         self,
         *,

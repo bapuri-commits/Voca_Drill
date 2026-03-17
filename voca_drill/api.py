@@ -63,6 +63,8 @@ def get_db() -> Generator[Session, None, None]:
 
 
 class SessionCreateRequest(BaseModel):
+    mode: str = "day"
+    chapter: str | None = None
     size: int = 15
     review_ratio: float = 0.7
     exam_type: str | None = None
@@ -140,12 +142,20 @@ def create_session(req: SessionCreateRequest, user_id: int = Depends(get_current
     db = get_session(_config["db"]["path"])
     scheduler = Scheduler(db, user_id=user_id)
     engine = DrillEngine(db, scheduler)
-    ctx = engine.create_session(
-        size=req.size,
-        review_ratio=req.review_ratio,
-        exam_type=req.exam_type,
-        daily_new_limit=req.daily_new_limit,
-    )
+
+    if req.mode == "day":
+        if not req.chapter:
+            raise HTTPException(400, "Day Study에는 chapter가 필요합니다")
+        ctx = engine.create_day_session(chapter=req.chapter)
+    elif req.mode == "review":
+        ctx = engine.create_review_session()
+    else:
+        ctx = engine.create_session(
+            size=req.size,
+            review_ratio=req.review_ratio,
+            exam_type=req.exam_type,
+            daily_new_limit=req.daily_new_limit,
+        )
 
     if ctx.is_empty:
         db.close()
