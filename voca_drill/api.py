@@ -506,7 +506,7 @@ def delete_backup(filename: str, user_id: int = Depends(get_current_user_id)) ->
         raise HTTPException(400, "잘못된 파일명")
     backup_dir = _get_backup_dir()
     backup_file = backup_dir / filename
-    if not backup_file.exists():
+    if not backup_file.exists() or not backup_file.name.startswith("voca_drill_"):
         raise HTTPException(404, "백업 파일을 찾을 수 없습니다")
     backup_file.unlink()
     return {"deleted": filename}

@@ -434,8 +434,11 @@ function TypingQuiz({ quizData, onAnswer, submitting }) {
     setInput('');
     setResult(null);
     setChecking(false);
-    setTimeout(() => inputRef.current?.focus(), 100);
-    return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); };
+    const focusTimer = setTimeout(() => inputRef.current?.focus(), 100);
+    return () => {
+      clearTimeout(focusTimer);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
   }, [quizData]);
 
   const q = quizData.question;
