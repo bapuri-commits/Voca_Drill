@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { setAuthFetch } from './api';
@@ -40,9 +39,7 @@ function AuthGate() {
   const { authenticated, initializing, authFetch, logout } = useAuth();
   const loc = useLocation();
 
-  useEffect(() => {
-    if (authFetch) setAuthFetch(authFetch);
-  }, [authFetch]);
+  if (authFetch) setAuthFetch(authFetch);
 
   if (initializing) {
     return (
