@@ -3,39 +3,50 @@ import { createContext, useContext, useState, useCallback, useEffect, useRef } f
 const AuthContext = createContext(null);
 
 const SYOPS_AUTH = import.meta.env.DEV ? 'https://syworkspace.cloud/api/auth' : '/syops-auth';
-const TOKEN_KEY = 'voca_token';
+const SYOPS_LOGIN = 'https://syworkspace.cloud/login';
 
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY));
+  const [token, setToken] = useState(null);
   const [initializing, setInitializing] = useState(true);
-  const [cookieAuth, setCookieAuth] = useState(false);
   const tokenRef = useRef(token);
+  const refreshPromiseRef = useRef(null);
 
   useEffect(() => { tokenRef.current = token; }, [token]);
 
-  useEffect(() => {
-    async function tryAuth() {
-      if (token) {
-        const res = await fetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } }).catch(() => null);
-        if (res?.ok) {
-          setInitializing(false);
-          return;
-        }
-        localStorage.removeItem(TOKEN_KEY);
-        setToken(null);
-      }
-
-      const cookieRes = await fetch('/api/auth/me', { credentials: 'include' }).catch(() => null);
-      if (cookieRes?.ok) {
-        setCookieAuth(true);
-        setInitializing(false);
-        return;
-      }
-
-      setInitializing(false);
-    }
-    tryAuth();
+  const fetchUserInfo = useCallback(async (accessToken) => {
+    try {
+      const res = await fetch('/api/auth/me', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      return res?.ok;
+    } catch { return false; }
   }, []);
+
+  const refreshAccessToken = useCallback(async () => {
+    if (refreshPromiseRef.current) return refreshPromiseRef.current;
+    const promise = (async () => {
+      try {
+        const res = await fetch(`${SYOPS_AUTH}/refresh`, {
+          method: 'POST',
+          credentials: 'include',
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setToken(data.access_token);
+          return data.access_token;
+        }
+      } catch { /* network error */ }
+      setToken(null);
+      return null;
+    })();
+    refreshPromiseRef.current = promise;
+    promise.finally(() => { refreshPromiseRef.current = null; });
+    return promise;
+  }, []);
+
+  useEffect(() => {
+    refreshAccessToken().finally(() => setInitializing(false));
+  }, [refreshAccessToken]);
 
   const login = useCallback(async (username, password) => {
     const res = await fetch(`${SYOPS_AUTH}/login`, {
@@ -49,17 +60,15 @@ export function AuthProvider({ children }) {
       throw new Error(err.detail || `HTTP ${res.status}`);
     }
     const data = await res.json();
-    const accessToken = data.access_token;
-    localStorage.setItem(TOKEN_KEY, accessToken);
-    setToken(accessToken);
-    setCookieAuth(false);
+    setToken(data.access_token);
     return true;
   }, []);
 
-  const logout = useCallback(() => {
-    localStorage.removeItem(TOKEN_KEY);
+  const logout = useCallback(async () => {
+    try {
+      await fetch(`${SYOPS_AUTH}/logout`, { method: 'POST', credentials: 'include' });
+    } catch { /* ignore */ }
     setToken(null);
-    setCookieAuth(false);
   }, []);
 
   const authFetch = useCallback(async (url, options = {}) => {
@@ -74,18 +83,21 @@ export function AuthProvider({ children }) {
         },
       });
 
-    const res = await doFetch(tokenRef.current);
+    let res = await doFetch(tokenRef.current);
 
     if (res.status === 401) {
-      localStorage.removeItem(TOKEN_KEY);
-      setToken(null);
-      setCookieAuth(false);
+      const newToken = await refreshAccessToken();
+      if (newToken) {
+        res = await doFetch(newToken);
+      } else {
+        window.location.href = SYOPS_LOGIN + '?redirect=' + encodeURIComponent(window.location.href);
+      }
     }
 
     return res;
-  }, []);
+  }, [refreshAccessToken]);
 
-  const authenticated = !!token || cookieAuth;
+  const authenticated = !!token;
 
   return (
     <AuthContext.Provider value={{ authenticated, initializing, login, logout, authFetch, token }}>

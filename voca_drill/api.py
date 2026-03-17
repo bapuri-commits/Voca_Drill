@@ -32,7 +32,7 @@ from .services.stats import StatsTracker
 from .services.wordbank import WordBank
 
 _config = load_config()
-_active_sessions: dict[str, tuple[SessionContext, Session]] = {}
+_active_sessions: dict[str, tuple[SessionContext, Session, int]] = {}
 
 
 MAX_BACKUPS = 10
@@ -82,8 +82,9 @@ app = FastAPI(title="Voca_Drill API", version="0.1.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
+    allow_origins=["https://voca.syworkspace.cloud", "http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
 
@@ -161,7 +162,12 @@ def get_word(word_id: int, db: Session = Depends(get_db)) -> dict:
 
 
 @app.post("/api/words/import")
-async def import_words(file: UploadFile, exam_type: str = "toefl", db: Session = Depends(get_db)) -> dict:
+async def import_words(
+    file: UploadFile,
+    exam_type: str = "toefl",
+    _user_id: int = Depends(get_current_user_id),
+    db: Session = Depends(get_db),
+) -> dict:
     content = await file.read()
     tmp_path = Path(f"_tmp_import_{_uuid.uuid4().hex[:8]}.json")
     tmp_path.write_bytes(content)
@@ -244,7 +250,7 @@ def create_session(req: SessionCreateRequest, user_id: int = Depends(get_current
         raise HTTPException(400, "학습할 단어가 없습니다")
 
     session_id = ctx.learning_session.id
-    _active_sessions[session_id] = (ctx, db)
+    _active_sessions[session_id] = (ctx, db, user_id)
 
     return {
         "session_id": session_id,
@@ -253,16 +259,19 @@ def create_session(req: SessionCreateRequest, user_id: int = Depends(get_current
     }
 
 
-def _get_active_session(session_id: str) -> tuple[SessionContext, Session]:
+def _get_active_session(session_id: str, user_id: int) -> tuple[SessionContext, Session]:
     entry = _active_sessions.get(session_id)
     if not entry:
         raise HTTPException(404, "세션을 찾을 수 없습니다")
-    return entry
+    ctx, db, owner_id = entry
+    if owner_id != user_id:
+        raise HTTPException(403, "세션 접근 권한이 없습니다")
+    return ctx, db
 
 
 @app.get("/api/sessions/{session_id}/next")
-def get_next_word(session_id: str, force_quiz_type: str | None = Query(None)) -> dict:
-    ctx, db = _get_active_session(session_id)
+def get_next_word(session_id: str, force_quiz_type: str | None = Query(None), user_id: int = Depends(get_current_user_id)) -> dict:
+    ctx, db = _get_active_session(session_id, user_id)
 
     if ctx.is_complete():
         return {"complete": True, "remaining": 0}
@@ -291,8 +300,8 @@ def get_next_word(session_id: str, force_quiz_type: str | None = Query(None)) ->
 
 
 @app.post("/api/sessions/{session_id}/answer")
-def submit_answer(session_id: str, req: AnswerRequest) -> dict:
-    ctx, db = _get_active_session(session_id)
+def submit_answer(session_id: str, req: AnswerRequest, user_id: int = Depends(get_current_user_id)) -> dict:
+    ctx, db = _get_active_session(session_id, user_id)
 
     result = ctx.answer(
         req.quality,
@@ -319,8 +328,8 @@ def submit_answer(session_id: str, req: AnswerRequest) -> dict:
 
 
 @app.post("/api/sessions/{session_id}/finish")
-def finish_session(session_id: str) -> dict:
-    ctx, db = _get_active_session(session_id)
+def finish_session(session_id: str, user_id: int = Depends(get_current_user_id)) -> dict:
+    ctx, db = _get_active_session(session_id, user_id)
 
     summary = ctx.finish()
     _active_sessions.pop(session_id, None)
@@ -535,11 +544,14 @@ def list_pdfs(user_id: int = Depends(get_current_user_id)) -> dict:
 @app.get("/api/pdf/{path:path}")
 def serve_pdf(path: str, token: str = Query(None), user_id: int | None = Depends(get_optional_user_id)):
     """PDF 서빙 — Authorization 헤더 또는 ?token= 쿼리 파라미터로 인증."""
-    from .auth import decode_token as _decode
+    from .auth import decode_token as _decode, _check_service_access
     if user_id is None and token:
         try:
             payload = _decode(token)
+            _check_service_access(payload)
             user_id = int(payload["sub"])
+        except HTTPException:
+            raise
         except Exception:
             raise HTTPException(401, "Invalid token")
     if user_id is None:

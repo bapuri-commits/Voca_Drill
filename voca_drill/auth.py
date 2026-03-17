@@ -60,12 +60,16 @@ def get_current_user_id(token: str | None = Depends(_extract_jwt)) -> int:
 
 
 def get_optional_user_id(token: str | None = Depends(_extract_jwt)) -> int | None:
-    """사용자 ID 추출. 인증 선택적 엔드포인트에 사용."""
+    """사용자 ID 추출. 인증 선택적 엔드포인트에 사용. 403(권한 없음)은 그대로 raise."""
     if token is None:
         return None
     try:
         payload = decode_token(token)
         _check_service_access(payload)
         return int(payload["sub"])
+    except HTTPException as e:
+        if e.status_code == status.HTTP_403_FORBIDDEN:
+            raise
+        return None
     except Exception:
         return None
