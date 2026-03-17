@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { setAuthFetch } from './api';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Study from './pages/Study';
@@ -36,10 +35,8 @@ function Nav() {
 }
 
 function AuthGate() {
-  const { authenticated, initializing, authFetch, logout } = useAuth();
+  const { authenticated, initializing, logout } = useAuth();
   const loc = useLocation();
-
-  if (authFetch) setAuthFetch(authFetch);
 
   if (initializing) {
     return (

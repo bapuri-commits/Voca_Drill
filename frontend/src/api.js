@@ -1,19 +1,23 @@
 const BASE = '/api';
-
-let _authFetch = null;
-
-export function setAuthFetch(fn) {
-  _authFetch = fn;
-}
+const TOKEN_KEY = 'voca_token';
 
 async function request(path, options = {}) {
   const url = `${BASE}${path}`;
-  const fetchFn = _authFetch || fetch;
-  const res = await fetchFn(url, {
-    headers: { 'Content-Type': 'application/json', ...options.headers },
-    ...options,
-  });
+  const token = localStorage.getItem(TOKEN_KEY);
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  const res = await fetch(url, { ...options, headers });
   if (!res.ok) {
+    if (res.status === 401) {
+      localStorage.removeItem(TOKEN_KEY);
+      window.location.reload();
+      throw new Error('Session expired');
+    }
     const err = await res.json().catch(() => ({ detail: res.statusText }));
     throw new Error(err.detail || `HTTP ${res.status}`);
   }
