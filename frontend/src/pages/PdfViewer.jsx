@@ -65,7 +65,7 @@ export default function PdfViewer() {
       {selected && (
         <div className="rounded-2xl overflow-hidden" style={{ background: 'var(--color-surface)' }}>
           <iframe
-            src={`/api/pdf/${encodeURIComponent(selected)}`}
+            src={`/api/pdf/${encodeURIComponent(selected)}?token=${localStorage.getItem('voca_token') || ''}`}
             className="w-full border-none"
             style={{ height: 'calc(100vh - 180px)', minHeight: '500px' }}
             title="PDF Viewer"

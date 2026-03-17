@@ -20,7 +20,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from .auth import get_current_user_id
+from .auth import get_current_user_id, get_optional_user_id
 from .config import load_config
 from .data.database import get_session, init_db
 from .data.models import BookTest
@@ -364,7 +364,17 @@ def list_pdfs(user_id: int = Depends(get_current_user_id)) -> list[dict]:
 
 
 @app.get("/api/pdf/{filename}")
-def serve_pdf(filename: str, user_id: int = Depends(get_current_user_id)):
+def serve_pdf(filename: str, token: str = Query(None), user_id: int | None = Depends(get_optional_user_id)):
+    """PDF 서빙 — Authorization 헤더 또는 ?token= 쿼리 파라미터로 인증."""
+    from .auth import decode_token as _decode
+    if user_id is None and token:
+        try:
+            payload = _decode(token)
+            user_id = int(payload["sub"])
+        except Exception:
+            raise HTTPException(401, "Invalid token")
+    if user_id is None:
+        raise HTTPException(401, "Not authenticated")
     path = (_PDF_DIR / filename).resolve()
     if not str(path).startswith(str(_PDF_DIR.resolve())):
         raise HTTPException(403, "접근 금지")
