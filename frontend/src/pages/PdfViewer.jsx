@@ -1,20 +1,28 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api';
 
+const TOKEN_KEY = 'voca_token';
+
 export default function PdfViewer() {
-  const [pdfs, setPdfs] = useState([]);
-  const [selected, setSelected] = useState(null);
+  const [data, setData] = useState(null);
+  const [mode, setMode] = useState('day');
+  const [selectedDay, setSelectedDay] = useState(null);
+  const [showFullWarning, setShowFullWarning] = useState(false);
+  const [loadingFull, setLoadingFull] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     api.listPdfs()
-      .then(list => {
-        setPdfs(list);
-        if (list.length > 0) setSelected(list[0].filename);
+      .then(d => {
+        setData(d);
+        if (d.day?.length > 0) setSelectedDay(d.day[0].filename);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
+
+  const token = localStorage.getItem(TOKEN_KEY) || '';
+  const pdfUrl = (filename) => `/api/pdf/${encodeURIComponent(filename)}?token=${token}`;
 
   if (loading) {
     return (
@@ -25,7 +33,10 @@ export default function PdfViewer() {
     );
   }
 
-  if (pdfs.length === 0) {
+  const hasDays = data?.day?.length > 0;
+  const hasFull = data?.full?.length > 0;
+
+  if (!hasDays && !hasFull) {
     return (
       <div className="max-w-md mx-auto p-4">
         <h1 className="text-xl font-bold mb-4">Book</h1>
@@ -34,9 +45,6 @@ export default function PdfViewer() {
           <p className="text-sm" style={{ color: 'var(--color-text-dim)' }}>
             PDF 파일이 없습니다.
           </p>
-          <p className="text-xs mt-2" style={{ color: 'var(--color-text-dim)', opacity: 0.6 }}>
-            서버의 data/pdf/ 디렉토리에 PDF를 추가하세요.
-          </p>
         </div>
       </div>
     );
@@ -44,33 +52,130 @@ export default function PdfViewer() {
 
   return (
     <div className="max-w-4xl mx-auto p-4">
+      {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-xl font-bold">Book</h1>
-        {pdfs.length > 1 && (
-          <select
-            value={selected || ''}
-            onChange={e => setSelected(e.target.value)}
-            className="px-3 py-1.5 rounded-lg text-sm border-none"
-            style={{ background: 'var(--color-surface)', color: 'var(--color-text)' }}
-          >
-            {pdfs.map(p => (
-              <option key={p.filename} value={p.filename}>
-                {p.filename} ({p.size_mb} MB)
-              </option>
-            ))}
-          </select>
-        )}
+
+        <div className="flex gap-2">
+          {hasDays && (
+            <button
+              onClick={() => { setMode('day'); setLoadingFull(false); }}
+              className="px-3 py-1.5 rounded-lg text-xs border-none cursor-pointer transition-colors"
+              style={{
+                background: mode === 'day' ? 'var(--color-primary)' : 'var(--color-surface-light)',
+                color: mode === 'day' ? '#fff' : 'var(--color-text-dim)',
+              }}
+            >
+              Day별
+            </button>
+          )}
+          {hasFull && (
+            <button
+              onClick={() => {
+                if (mode !== 'full') setShowFullWarning(true);
+              }}
+              className="px-3 py-1.5 rounded-lg text-xs border-none cursor-pointer transition-colors"
+              style={{
+                background: mode === 'full' ? 'var(--color-primary)' : 'var(--color-surface-light)',
+                color: mode === 'full' ? '#fff' : 'var(--color-text-dim)',
+              }}
+            >
+              전체
+            </button>
+          )}
+        </div>
       </div>
 
-      {selected && (
+      {/* Day Selector */}
+      {mode === 'day' && hasDays && (
+        <div className="flex gap-2 overflow-x-auto pb-3 mb-3">
+          {data.day.map(d => (
+            <button
+              key={d.filename}
+              onClick={() => setSelectedDay(d.filename)}
+              className="px-3 py-2 rounded-lg text-xs whitespace-nowrap border-none cursor-pointer transition-colors flex-shrink-0"
+              style={{
+                background: selectedDay === d.filename ? 'var(--color-primary)' : 'var(--color-surface)',
+                color: selectedDay === d.filename ? '#fff' : 'var(--color-text-dim)',
+              }}
+            >
+              {d.label}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Day PDF */}
+      {mode === 'day' && selectedDay && (
         <div className="rounded-2xl overflow-hidden" style={{ background: 'var(--color-surface)' }}>
           <iframe
-            src={`/api/pdf/${encodeURIComponent(selected)}?token=${localStorage.getItem('voca_token') || ''}`}
+            key={selectedDay}
+            src={pdfUrl(selectedDay)}
             className="w-full border-none"
-            style={{ height: 'calc(100vh - 180px)', minHeight: '500px' }}
+            style={{ height: 'calc(100vh - 220px)', minHeight: '500px' }}
             title="PDF Viewer"
           />
         </div>
+      )}
+
+      {/* Full PDF Warning Modal */}
+      {showFullWarning && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6"
+             style={{ background: 'rgba(0,0,0,0.7)' }}
+             onClick={() => setShowFullWarning(false)}>
+          <div className="w-full max-w-xs rounded-2xl p-6 text-center"
+               style={{ background: 'var(--color-surface)' }}
+               onClick={e => e.stopPropagation()}>
+            <div className="text-3xl mb-3">📚</div>
+            <h2 className="text-lg font-bold mb-2">전체 PDF 로드</h2>
+            <p className="text-sm mb-1" style={{ color: 'var(--color-text-dim)' }}>
+              {data.full[0]?.size_mb || 300}MB 파일을 로드합니다.
+            </p>
+            <p className="text-xs mb-5" style={{ color: 'var(--color-text-dim)', opacity: 0.6 }}>
+              네트워크 상태에 따라 1~3분 소요될 수 있습니다.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowFullWarning(false)}
+                className="flex-1 py-2.5 rounded-xl text-sm border-none cursor-pointer"
+                style={{ background: 'var(--color-surface-light)', color: 'var(--color-text-dim)' }}
+              >
+                취소
+              </button>
+              <button
+                onClick={() => { setMode('full'); setLoadingFull(true); setShowFullWarning(false); }}
+                className="flex-1 py-2.5 rounded-xl text-sm font-bold border-none cursor-pointer"
+                style={{ background: 'var(--color-primary)', color: '#fff' }}
+              >
+                로드
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Full PDF */}
+      {mode === 'full' && hasFull && (
+        <>
+          {loadingFull && (
+            <div className="flex items-center justify-center py-8 gap-3">
+              <div className="w-6 h-6 rounded-full border-3 border-t-transparent animate-spin"
+                   style={{ borderColor: 'var(--color-primary)', borderTopColor: 'transparent' }} />
+              <span className="text-sm" style={{ color: 'var(--color-text-dim)' }}>
+                전체 PDF 로딩 중... ({data.full[0]?.size_mb}MB)
+              </span>
+            </div>
+          )}
+          <div className="rounded-2xl overflow-hidden" style={{ background: 'var(--color-surface)' }}>
+            <iframe
+              src={pdfUrl(data.full[0].filename)}
+              className="w-full border-none"
+              style={{ height: 'calc(100vh - 180px)', minHeight: '500px' }}
+              title="Full PDF"
+              onLoad={() => setLoadingFull(false)}
+            />
+          </div>
+        </>
       )}
     </div>
   );

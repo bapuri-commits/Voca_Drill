@@ -354,17 +354,21 @@ _PDF_DIR = Path(__file__).resolve().parent.parent / "data" / "pdf"
 
 
 @app.get("/api/pdf/list")
-def list_pdfs(user_id: int = Depends(get_current_user_id)) -> list[dict]:
+def list_pdfs(user_id: int = Depends(get_current_user_id)) -> dict:
+    result: dict = {"full": [], "day": []}
     if not _PDF_DIR.exists():
-        return []
-    return [
-        {"filename": f.name, "size_mb": round(f.stat().st_size / 1024 / 1024, 1)}
-        for f in sorted(_PDF_DIR.glob("*.pdf"))
-    ]
+        return result
+    for f in sorted(_PDF_DIR.glob("*.pdf")):
+        result["full"].append({"filename": f.name, "size_mb": round(f.stat().st_size / 1024 / 1024, 1)})
+    day_dir = _PDF_DIR / "day"
+    if day_dir.exists():
+        for f in sorted(day_dir.glob("*.pdf")):
+            result["day"].append({"filename": f"day/{f.name}", "label": f.stem, "size_mb": round(f.stat().st_size / 1024 / 1024, 1)})
+    return result
 
 
-@app.get("/api/pdf/{filename}")
-def serve_pdf(filename: str, token: str = Query(None), user_id: int | None = Depends(get_optional_user_id)):
+@app.get("/api/pdf/{path:path}")
+def serve_pdf(path: str, token: str = Query(None), user_id: int | None = Depends(get_optional_user_id)):
     """PDF 서빙 — Authorization 헤더 또는 ?token= 쿼리 파라미터로 인증."""
     from .auth import decode_token as _decode
     if user_id is None and token:
@@ -375,12 +379,12 @@ def serve_pdf(filename: str, token: str = Query(None), user_id: int | None = Dep
             raise HTTPException(401, "Invalid token")
     if user_id is None:
         raise HTTPException(401, "Not authenticated")
-    path = (_PDF_DIR / filename).resolve()
-    if not str(path).startswith(str(_PDF_DIR.resolve())):
+    resolved = (_PDF_DIR / path).resolve()
+    if not str(resolved).startswith(str(_PDF_DIR.resolve())):
         raise HTTPException(403, "접근 금지")
-    if not path.exists() or path.suffix != ".pdf":
+    if not resolved.exists() or resolved.suffix != ".pdf":
         raise HTTPException(404, "PDF를 찾을 수 없습니다")
-    return FileResponse(path, media_type="application/pdf")
+    return FileResponse(resolved, media_type="application/pdf")
 
 
 # ──────────────────── Helpers ────────────────────
