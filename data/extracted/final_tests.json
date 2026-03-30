@@ -1,0 +1,836 @@
+[
+  {
+    "test_name": "Final TEST 1",
+    "covers": [
+      "Day 01",
+      "Day 02",
+      "Day 03",
+      "Day 04",
+      "Day 05",
+      "Day 06",
+      "Day 07",
+      "Day 08",
+      "Day 09",
+      "Day 10",
+      "Day 11",
+      "Day 12",
+      "Day 13",
+      "Day 14",
+      "Day 15",
+      "Day 16",
+      "Day 17",
+      "Day 18",
+      "Day 19",
+      "Day 20",
+      "Day 21",
+      "Day 22",
+      "Day 23",
+      "Day 24",
+      "Day 25",
+      "Day 26",
+      "Day 27",
+      "Day 28",
+      "Day 29",
+      "Day 30"
+    ],
+    "question_count": 20,
+    "questions": [
+      {
+        "number": 1,
+        "question_text": "Over half of North America's indigenous population died from disease brought by the colonists.",
+        "highlighted_word": "indigenous",
+        "choices": {
+          "A": "contemporary",
+          "B": "heterogeneous",
+          "C": "native",
+          "D": "prolific"
+        },
+        "answer": "C"
+      },
+      {
+        "number": 2,
+        "question_text": "Depression medication can cause conspicuous weight gain, intensifying patients' low self-worth.",
+        "highlighted_word": "conspicuous",
+        "choices": {
+          "A": "irrevocable",
+          "B": "strenuous",
+          "C": "noticeable",
+          "D": "unprecedented"
+        },
+        "answer": "C"
+      },
+      {
+        "number": 3,
+        "question_text": "Charles III was the sovereign of the Holy Roman Empire from 839 to 888 AD.",
+        "highlighted_word": "sovereign",
+        "choices": {
+          "A": "settler",
+          "B": "defender",
+          "C": "scholar",
+          "D": "ruler"
+        },
+        "answer": "D"
+      },
+      {
+        "number": 4,
+        "question_text": "Parenthood is still more of an impediment to women's professional development than to men's.",
+        "highlighted_word": "impediment",
+        "choices": {
+          "A": "barrier",
+          "B": "deviation",
+          "C": "impetus",
+          "D": "benefit"
+        },
+        "answer": "A"
+      },
+      {
+        "number": 5,
+        "question_text": "Too little oxygen in rivers and lakes can result in mortality of aquatic organisms.",
+        "highlighted_word": "mortality",
+        "choices": {
+          "A": "death",
+          "B": "reduction",
+          "C": "displacement",
+          "D": "subsistence"
+        },
+        "answer": "A"
+      },
+      {
+        "number": 6,
+        "question_text": "Fleming inadvertently discovered penicillin after noticing fungus on his bacteria cultures.",
+        "highlighted_word": "inadvertently",
+        "choices": {
+          "A": "rapidly",
+          "B": "resentfully",
+          "C": "accidentally",
+          "D": "frankly"
+        },
+        "answer": "C"
+      },
+      {
+        "number": 7,
+        "question_text": "Detroit was home to America's formerly thriving automobile industry before the financial crisis.",
+        "highlighted_word": "thriving",
+        "choices": {
+          "A": "emerging",
+          "B": "flourishing",
+          "C": "absorbing",
+          "D": "creative"
+        },
+        "answer": "B"
+      },
+      {
+        "number": 8,
+        "question_text": "Well-designed syringes are sharp and require a minimal application of force to penetrate the skin.",
+        "highlighted_word": "penetrate",
+        "choices": {
+          "A": "elude",
+          "B": "wound",
+          "C": "pierce",
+          "D": "extract"
+        },
+        "answer": "C"
+      },
+      {
+        "number": 9,
+        "question_text": "The sediment at the bottom of coastlines ranges from sand and gravel to mud.",
+        "highlighted_word": "sediment",
+        "choices": {
+          "A": "habitat",
+          "B": "waste",
+          "C": "function",
+          "D": "deposition"
+        },
+        "answer": "D"
+      },
+      {
+        "number": 10,
+        "question_text": "The colored rattles found in Navajo cultures are used exclusively by healers performing rituals.",
+        "highlighted_word": "exclusively",
+        "choices": {
+          "A": "only",
+          "B": "annually",
+          "C": "credibly",
+          "D": "carefully"
+        },
+        "answer": "A"
+      },
+      {
+        "number": 11,
+        "question_text": "Ivy Lee is considered to have pioneered the modern field of public relations in the late 1800s.",
+        "highlighted_word": "pioneered",
+        "choices": {
+          "A": "started",
+          "B": "expanded",
+          "C": "stabilized",
+          "D": "engaged"
+        },
+        "answer": "A"
+      },
+      {
+        "number": 12,
+        "question_text": "Educators of young children should incorporate games and other fun activities in the curriculum.",
+        "highlighted_word": "incorporate",
+        "choices": {
+          "A": "organize",
+          "B": "undertake",
+          "C": "engender",
+          "D": "include"
+        },
+        "answer": "D"
+      },
+      {
+        "number": 13,
+        "question_text": "How the Great Pyramid of Giza was erected remains a topic of debate among archaeologists.",
+        "highlighted_word": "erected",
+        "choices": {
+          "A": "designed",
+          "B": "utilized",
+          "C": "discovered",
+          "D": "raised"
+        },
+        "answer": "D"
+      },
+      {
+        "number": 14,
+        "question_text": "Physiotherapy is used to help people resume normal physical activities after a serious injury.",
+        "highlighted_word": "resume",
+        "choices": {
+          "A": "recommence",
+          "B": "maintain",
+          "C": "endure",
+          "D": "perform"
+        },
+        "answer": "A"
+      },
+      {
+        "number": 15,
+        "question_text": "When a typhoon occurs near populated areas, it can cause a staggering amount of damage.",
+        "highlighted_word": "staggering",
+        "choices": {
+          "A": "unknown",
+          "B": "shocking",
+          "C": "limited",
+          "D": "conclusive"
+        },
+        "answer": "B"
+      },
+      {
+        "number": 16,
+        "question_text": "Recent graduates often complain that professional experience is a requisite for many jobs.",
+        "highlighted_word": "requisite",
+        "choices": {
+          "A": "preference",
+          "B": "requirement",
+          "C": "consideration",
+          "D": "advantage"
+        },
+        "answer": "B"
+      },
+      {
+        "number": 17,
+        "question_text": "The church was characterized by beautifully wrought stonework on its interior and exterior walls.",
+        "highlighted_word": "wrought",
+        "choices": {
+          "A": "confined",
+          "B": "preserved",
+          "C": "formed",
+          "D": "painted"
+        },
+        "answer": "C"
+      },
+      {
+        "number": 18,
+        "question_text": "Despite his humble roots, Henry Ford became one of history's most important industrialists.",
+        "highlighted_word": "humble",
+        "choices": {
+          "A": "modest",
+          "B": "shameful",
+          "C": "pretentious",
+          "D": "unusual"
+        },
+        "answer": "A"
+      },
+      {
+        "number": 19,
+        "question_text": "Erosion is the mechanism by which the Grand Canyon was formed over several million years.",
+        "highlighted_word": "mechanism",
+        "choices": {
+          "A": "evidence",
+          "B": "challenge",
+          "C": "phenomenon",
+          "D": "means"
+        },
+        "answer": "D"
+      },
+      {
+        "number": 20,
+        "question_text": "Nihilism is a philosophy that states morals, ideas, and beliefs have no intrinsic worth or value.",
+        "highlighted_word": "intrinsic",
+        "choices": {
+          "A": "inherent",
+          "B": "permanent",
+          "C": "credible",
+          "D": "sentimental"
+        },
+        "answer": "A"
+      }
+    ]
+  },
+  {
+    "test_name": "Final TEST 2",
+    "covers": [
+      "Day 01",
+      "Day 02",
+      "Day 03",
+      "Day 04",
+      "Day 05",
+      "Day 06",
+      "Day 07",
+      "Day 08",
+      "Day 09",
+      "Day 10",
+      "Day 11",
+      "Day 12",
+      "Day 13",
+      "Day 14",
+      "Day 15",
+      "Day 16",
+      "Day 17",
+      "Day 18",
+      "Day 19",
+      "Day 20",
+      "Day 21",
+      "Day 22",
+      "Day 23",
+      "Day 24",
+      "Day 25",
+      "Day 26",
+      "Day 27",
+      "Day 28",
+      "Day 29",
+      "Day 30"
+    ],
+    "question_count": 20,
+    "questions": [
+      {
+        "number": 1,
+        "question_text": "Scientists have recently postulated the existence of not yet discovered planets beyond Neptune.",
+        "highlighted_word": "postulated",
+        "choices": {
+          "A": "hypothesized",
+          "B": "concluded",
+          "C": "declined",
+          "D": "believed"
+        },
+        "answer": "A"
+      },
+      {
+        "number": 2,
+        "question_text": "Whether or not the Helen of Troy of Ancient Greek mythology was real is open to conjecture.",
+        "highlighted_word": "conjecture",
+        "choices": {
+          "A": "contention",
+          "B": "change",
+          "C": "speculation",
+          "D": "resistance"
+        },
+        "answer": "C"
+      },
+      {
+        "number": 3,
+        "question_text": "During World War II, Alan Turing had the novel idea of analyzing code with a machine.",
+        "highlighted_word": "novel",
+        "choices": {
+          "A": "conventional",
+          "B": "innovative",
+          "C": "lucid",
+          "D": "initial"
+        },
+        "answer": "B"
+      },
+      {
+        "number": 4,
+        "question_text": "A group of three men incited Cornwall's residents to revolt against King Henry's unfair tax levies.",
+        "highlighted_word": "incited",
+        "choices": {
+          "A": "permitted",
+          "B": "advanced",
+          "C": "constrained",
+          "D": "provoked"
+        },
+        "answer": "D"
+      },
+      {
+        "number": 5,
+        "question_text": "The population of Paris reached its peak in 1929 and declined in subsequent years.",
+        "highlighted_word": "subsequent",
+        "choices": {
+          "A": "preceding",
+          "B": "related",
+          "C": "contemporary",
+          "D": "following"
+        },
+        "answer": "D"
+      },
+      {
+        "number": 6,
+        "question_text": "Many Medieval manuscripts were embellished with elaborate illustrations.",
+        "highlighted_word": "embellished",
+        "choices": {
+          "A": "exaggerated",
+          "B": "decorated",
+          "C": "outlined",
+          "D": "emphasized"
+        },
+        "answer": "B"
+      },
+      {
+        "number": 7,
+        "question_text": "A plausible theory regarding the dinosaurs' extinction is that a large comet collided with Earth.",
+        "highlighted_word": "plausible",
+        "choices": {
+          "A": "possible",
+          "B": "sophisticated",
+          "C": "imaginative",
+          "D": "paradoxical"
+        },
+        "answer": "A"
+      },
+      {
+        "number": 8,
+        "question_text": "With a widening wealth gap between the rich and poor, many wonder if capitalism is still feasible.",
+        "highlighted_word": "feasible",
+        "choices": {
+          "A": "logical",
+          "B": "equivocal",
+          "C": "viable",
+          "D": "impartial"
+        },
+        "answer": "C"
+      },
+      {
+        "number": 9,
+        "question_text": "Now and then, geniuses such as Einstein come along and change our view of the world.",
+        "highlighted_word": "Now and then",
+        "choices": {
+          "A": "Conventionally",
+          "B": "Regularly",
+          "C": "Occasionally",
+          "D": "Persistently"
+        },
+        "answer": "C"
+      },
+      {
+        "number": 10,
+        "question_text": "Archaeologists Carter and Carnarvorn took pains to ensure King Tut's tomb remained intact.",
+        "highlighted_word": "intact",
+        "choices": {
+          "A": "diminished",
+          "B": "undamaged",
+          "C": "obsolete",
+          "D": "versatile"
+        },
+        "answer": "B"
+      },
+      {
+        "number": 11,
+        "question_text": "The HIV virus can remain dormant in a human body for years without causing any symptoms.",
+        "highlighted_word": "dormant",
+        "choices": {
+          "A": "conscious",
+          "B": "isolated",
+          "C": "impermeable",
+          "D": "inactive"
+        },
+        "answer": "D"
+      },
+      {
+        "number": 12,
+        "question_text": "Darwin's theory of natural selection seemed absurd to his peers but is now widely accepted.",
+        "highlighted_word": "absurd",
+        "choices": {
+          "A": "ridiculous",
+          "B": "inaccurate",
+          "C": "negligible",
+          "D": "tedious"
+        },
+        "answer": "A"
+      },
+      {
+        "number": 13,
+        "question_text": "Although the Celtic tribes' origins are obscure, Rome's conquest of them is well-documented.",
+        "highlighted_word": "obscure",
+        "choices": {
+          "A": "complicated",
+          "B": "incredible",
+          "C": "uncertain",
+          "D": "noteworthy"
+        },
+        "answer": "C"
+      },
+      {
+        "number": 14,
+        "question_text": "It is widely believed that honesty is a significant facet of a successful marriage.",
+        "highlighted_word": "facet",
+        "choices": {
+          "A": "aspect",
+          "B": "base",
+          "C": "cause",
+          "D": "requirement"
+        },
+        "answer": "A"
+      },
+      {
+        "number": 15,
+        "question_text": "Bleach and ammonia should never be mixed together, since the combination forms lethal fumes.",
+        "highlighted_word": "lethal",
+        "choices": {
+          "A": "deadly",
+          "B": "excessive",
+          "C": "coarse",
+          "D": "sporadic"
+        },
+        "answer": "A"
+      },
+      {
+        "number": 16,
+        "question_text": "Squirrels must accumulate seeds and nuts throughout the summer and fall to survive the winter.",
+        "highlighted_word": "accumulate",
+        "choices": {
+          "A": "preserve",
+          "B": "consume",
+          "C": "approach",
+          "D": "gather"
+        },
+        "answer": "D"
+      },
+      {
+        "number": 17,
+        "question_text": "With the rise of online piracy, the music industry is much less lucrative than it was in the past.",
+        "highlighted_word": "lucrative",
+        "choices": {
+          "A": "accessible",
+          "B": "profitable",
+          "C": "admired",
+          "D": "influential"
+        },
+        "answer": "B"
+      },
+      {
+        "number": 18,
+        "question_text": "A herd of stampeding bison can only be halted by a natural barrier, such as a cliff or a lake.",
+        "highlighted_word": "halted",
+        "choices": {
+          "A": "intrigued",
+          "B": "captured",
+          "C": "located",
+          "D": "stopped"
+        },
+        "answer": "D"
+      },
+      {
+        "number": 19,
+        "question_text": "In the late 1990s and early 2000s, 19 members of the European Union adopted the euro.",
+        "highlighted_word": "adopted",
+        "choices": {
+          "A": "took up",
+          "B": "developed",
+          "C": "led on",
+          "D": "displayed"
+        },
+        "answer": "A"
+      },
+      {
+        "number": 20,
+        "question_text": "Submerged for centuries, Cleopatra's royal quarters were found off the coast of Alexandria.",
+        "highlighted_word": "quarters",
+        "choices": {
+          "A": "belongings",
+          "B": "garments",
+          "C": "staples",
+          "D": "dwellings"
+        },
+        "answer": "D"
+      }
+    ]
+  },
+  {
+    "test_name": "Final TEST 3",
+    "covers": [
+      "Day 01",
+      "Day 02",
+      "Day 03",
+      "Day 04",
+      "Day 05",
+      "Day 06",
+      "Day 07",
+      "Day 08",
+      "Day 09",
+      "Day 10",
+      "Day 11",
+      "Day 12",
+      "Day 13",
+      "Day 14",
+      "Day 15",
+      "Day 16",
+      "Day 17",
+      "Day 18",
+      "Day 19",
+      "Day 20",
+      "Day 21",
+      "Day 22",
+      "Day 23",
+      "Day 24",
+      "Day 25",
+      "Day 26",
+      "Day 27",
+      "Day 28",
+      "Day 29",
+      "Day 30"
+    ],
+    "question_count": 20,
+    "questions": [
+      {
+        "number": 1,
+        "question_text": "Marine cyanobacteria are known to be prolific sources of biochemically active natural products.",
+        "highlighted_word": "prolific",
+        "choices": {
+          "A": "original",
+          "B": "toxic",
+          "C": "intriguing",
+          "D": "abundant"
+        },
+        "answer": "D"
+      },
+      {
+        "number": 2,
+        "question_text": "Traumatic experiences in a person's adult life can trigger latent anxiety or panic disorders.",
+        "highlighted_word": "trigger",
+        "choices": {
+          "A": "activate",
+          "B": "interrupt",
+          "C": "regulate",
+          "D": "lessen"
+        },
+        "answer": "A"
+      },
+      {
+        "number": 3,
+        "question_text": "For the safety of the public, hospitals must discard medical waste in properly sealed containers.",
+        "highlighted_word": "discard",
+        "choices": {
+          "A": "delineate",
+          "B": "throw away",
+          "C": "use up",
+          "D": "sanitize"
+        },
+        "answer": "B"
+      },
+      {
+        "number": 4,
+        "question_text": "Historians surmise that the prehistoric monument Stonehenge was completed over centuries.",
+        "highlighted_word": "surmise",
+        "choices": {
+          "A": "renounce",
+          "B": "substantiate",
+          "C": "infer",
+          "D": "propose"
+        },
+        "answer": "C"
+      },
+      {
+        "number": 5,
+        "question_text": "In recent decades, several states abolished the death penalty, deeming it as unconstitutional.",
+        "highlighted_word": "deeming",
+        "choices": {
+          "A": "refuting",
+          "B": "unveiling",
+          "C": "rejecting",
+          "D": "believing"
+        },
+        "answer": "D"
+      },
+      {
+        "number": 6,
+        "question_text": "There was anarchy in the streets of Paris following the accession of Louis XVI to the throne.",
+        "highlighted_word": "anarchy",
+        "choices": {
+          "A": "calm",
+          "B": "disorder",
+          "C": "anxiety",
+          "D": "surveillance"
+        },
+        "answer": "B"
+      },
+      {
+        "number": 7,
+        "question_text": "Ascending Mt. McKinley is a chancy endeavor even for experienced mountain climbers.",
+        "highlighted_word": "chancy",
+        "choices": {
+          "A": "risky",
+          "B": "bold",
+          "C": "fruitless",
+          "D": "rigorous"
+        },
+        "answer": "A"
+      },
+      {
+        "number": 8,
+        "question_text": "A utilitarian approach to decision-making aims to produce the greatest benefit and least harm.",
+        "highlighted_word": "utilitarian",
+        "choices": {
+          "A": "pragmatic",
+          "B": "pessimistic",
+          "C": "humble",
+          "D": "theoretical"
+        },
+        "answer": "A"
+      },
+      {
+        "number": 9,
+        "question_text": "Marxist socialists seek an equitable allocation of resources determined by use-driven demand.",
+        "highlighted_word": "allocation",
+        "choices": {
+          "A": "variety",
+          "B": "distribution",
+          "C": "revitalization",
+          "D": "establishment"
+        },
+        "answer": "B"
+      },
+      {
+        "number": 10,
+        "question_text": "Molecules are mechanically interlocked to form connections analogous to keys on a key chain.",
+        "highlighted_word": "interlocked",
+        "choices": {
+          "A": "reinforced",
+          "B": "altered",
+          "C": "linked",
+          "D": "distorted"
+        },
+        "answer": "C"
+      },
+      {
+        "number": 11,
+        "question_text": "Bonobos have been observed crafting rudimentary tools similar to those of early humans.",
+        "highlighted_word": "rudimentary",
+        "choices": {
+          "A": "intricate",
+          "B": "peculiar",
+          "C": "primitive",
+          "D": "useful"
+        },
+        "answer": "C"
+      },
+      {
+        "number": 12,
+        "question_text": "A number of treaties have been signed to slow the proliferation of nuclear weapons.",
+        "highlighted_word": "proliferation",
+        "choices": {
+          "A": "resurgence",
+          "B": "destruction",
+          "C": "agitation",
+          "D": "increase"
+        },
+        "answer": "D"
+      },
+      {
+        "number": 13,
+        "question_text": "Kangaroo rats that inhabit desert environments can subsist without water for long periods.",
+        "highlighted_word": "subsist",
+        "choices": {
+          "A": "thrive",
+          "B": "survive",
+          "C": "travel",
+          "D": "hibernate"
+        },
+        "answer": "B"
+      },
+      {
+        "number": 14,
+        "question_text": "An intrusive family member can be a burden for a person who values his or her privacy.",
+        "highlighted_word": "intrusive",
+        "choices": {
+          "A": "meddlesome",
+          "B": "stubborn",
+          "C": "cooperative",
+          "D": "anxious"
+        },
+        "answer": "A"
+      },
+      {
+        "number": 15,
+        "question_text": "Goods can be shipped to the secluded communities of northern Canada only by air or sea.",
+        "highlighted_word": "secluded",
+        "choices": {
+          "A": "populated",
+          "B": "remote",
+          "C": "coastal",
+          "D": "religious"
+        },
+        "answer": "B"
+      },
+      {
+        "number": 16,
+        "question_text": "Financial institutions have stringent requirements that must be met for a loan to be approved.",
+        "highlighted_word": "stringent",
+        "choices": {
+          "A": "strict",
+          "B": "complex",
+          "C": "burdensome",
+          "D": "unreasonable"
+        },
+        "answer": "A"
+      },
+      {
+        "number": 17,
+        "question_text": "The presence of nearby prey triggers an instantaneous response in a great white shark.",
+        "highlighted_word": "instantaneous",
+        "choices": {
+          "A": "vicious",
+          "B": "effective",
+          "C": "immediate",
+          "D": "involuntary"
+        },
+        "answer": "C"
+      },
+      {
+        "number": 18,
+        "question_text": "Customarily, American politicians who lose an election call their opponents to concede defeat.",
+        "highlighted_word": "concede",
+        "choices": {
+          "A": "condemn",
+          "B": "acknowledge",
+          "C": "prevent",
+          "D": "delay"
+        },
+        "answer": "B"
+      },
+      {
+        "number": 19,
+        "question_text": "The role of ancient Indian sages was to impart education and wisdom orally to the young.",
+        "highlighted_word": "impart",
+        "choices": {
+          "A": "widen",
+          "B": "reclaim",
+          "C": "provide",
+          "D": "evaluate"
+        },
+        "answer": "C"
+      },
+      {
+        "number": 20,
+        "question_text": "Spills of saltwater, a byproduct of oil drilling, have left acres of farmland in North Dakota sterile.",
+        "highlighted_word": "sterile",
+        "choices": {
+          "A": "barren",
+          "B": "applicable",
+          "C": "humid",
+          "D": "turbulent"
+        },
+        "answer": "A"
+      }
+    ]
+  }
+]

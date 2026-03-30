@@ -68,8 +68,8 @@ export default function StudyHome() {
               <button
                 key={ch.chapter}
                 onClick={() => nav(`/study/session?mode=day&chapter=${encodeURIComponent(ch.chapter)}`)}
-                className="w-full p-4 rounded-xl border-none cursor-pointer text-left transition-transform active:scale-[0.98]"
-                style={{ background: 'var(--color-surface)' }}
+                className="w-full p-4 rounded-xl cursor-pointer text-left transition-transform active:scale-[0.98]"
+                style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', color: 'var(--color-text)' }}
               >
                 <div className="flex justify-between items-center mb-2">
                   <span className="font-bold">{ch.chapter}</span>
@@ -77,7 +77,7 @@ export default function StudyHome() {
                     {ch.studied}/{ch.total}
                   </span>
                 </div>
-                <div className="h-2 rounded-full overflow-hidden" style={{ background: 'var(--color-surface-light)' }}>
+                <div className="h-2 rounded-full overflow-hidden" style={{ background: 'var(--color-surface-alt)' }}>
                   <div
                     className="h-full rounded-full transition-all"
                     style={{
@@ -140,8 +140,8 @@ function ModeCard({ icon, title, desc, onClick, disabled, badge }) {
     <button
       onClick={onClick}
       disabled={disabled}
-      className="w-full p-5 rounded-2xl border-none cursor-pointer text-left transition-transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-default"
-      style={{ background: 'var(--color-surface)' }}
+      className="w-full p-5 rounded-2xl cursor-pointer text-left transition-transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-default"
+      style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', color: 'var(--color-text)' }}
     >
       <div className="flex items-center gap-4">
         <div className="text-3xl">{icon}</div>

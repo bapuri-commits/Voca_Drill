@@ -97,7 +97,7 @@ export default function Study() {
         <div className="text-5xl mb-4">:(</div>
         <p className="text-lg mb-6 text-center" style={{ color: 'var(--color-danger)' }}>{error}</p>
         <button onClick={() => nav('/study')} className="px-8 py-3 rounded-xl border-none cursor-pointer font-bold"
-                style={{ background: 'var(--color-surface-light)', color: 'var(--color-text)' }}>
+                style={{ background: 'var(--color-surface-alt)', color: 'var(--color-text)' }}>
           Back
         </button>
       </div>
@@ -114,7 +114,7 @@ export default function Study() {
         <h1 className="text-2xl font-bold mb-1">Session Complete</h1>
         <p className="text-sm mb-6" style={{ color: 'var(--color-text-dim)' }}>{rate}% accuracy</p>
 
-        <div className="w-full max-w-xs rounded-2xl p-5 mb-6" style={{ background: 'var(--color-surface)' }}>
+        <div className="w-full max-w-xs rounded-2xl p-5 mb-6" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)' }}>
           <div className="grid grid-cols-2 gap-4 text-center">
             <Stat label="Total" value={summary.total_words} />
             <Stat label="Correct" value={summary.correct_count} />
@@ -136,7 +136,7 @@ export default function Study() {
           </button>
           <button onClick={() => nav('/study')}
                   className="px-8 py-3 rounded-xl border-none cursor-pointer font-bold transition-transform active:scale-95"
-                  style={{ background: 'var(--color-surface-light)', color: 'var(--color-text)' }}>
+                  style={{ background: 'var(--color-surface-alt)', color: 'var(--color-text)' }}>
             Home
           </button>
         </div>
@@ -170,7 +170,7 @@ export default function Study() {
             </span>
           )}
         </div>
-        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--color-surface-light)' }}>
+        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--color-border)' }}>
           <div className="h-full rounded-full transition-all duration-500 ease-out"
                style={{ width: `${(answered / total) * 100}%`, background: 'var(--color-primary)' }} />
         </div>
@@ -221,18 +221,18 @@ function CardFlipQuiz({ quizData, onAnswer, submitting }) {
                         transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}>
 
             <div className="absolute inset-0 rounded-2xl p-6 flex flex-col items-center justify-center"
-                 style={{ background: 'var(--color-surface)', backfaceVisibility: 'hidden' }}>
+                 style={{ background: 'var(--color-surface)', backfaceVisibility: 'hidden', border: '1px solid var(--color-border)' }}>
               <div className="text-4xl font-bold mb-3">{front.english}</div>
               {front.pronunciation && (
                 <div className="text-base mb-2" style={{ color: 'var(--color-text-dim)' }}>{front.pronunciation}</div>
               )}
               <div className="text-sm" style={{ color: 'var(--color-text-dim)' }}>{front.part_of_speech}</div>
-              <div className="mt-10 text-sm" style={{ color: 'var(--color-surface-light)' }}>Tap to flip</div>
+              <div className="mt-10 text-sm" style={{ color: 'var(--color-border)' }}>Tap to flip</div>
             </div>
 
             <div className="absolute inset-0 rounded-2xl p-5 overflow-y-auto"
                  style={{ background: 'var(--color-surface)', backfaceVisibility: 'hidden',
-                          transform: 'rotateY(180deg)' }}>
+                          transform: 'rotateY(180deg)', border: '1px solid var(--color-border)' }}>
               <div className="text-lg font-bold mb-3 text-center" style={{ color: 'var(--color-text-dim)' }}>
                 {front.english}
               </div>
@@ -264,7 +264,7 @@ function CardFlipQuiz({ quizData, onAnswer, submitting }) {
               ))}
               {back.exam_tip && (
                 <div className="mt-2 p-2.5 rounded-lg text-xs leading-relaxed"
-                     style={{ background: 'var(--color-surface-light)', color: 'var(--color-warning)' }}>
+                     style={{ background: 'var(--color-warning-bg)', color: 'var(--color-warning)' }}>
                   {back.exam_tip}
                 </div>
               )}
@@ -290,7 +290,7 @@ function CardFlipQuiz({ quizData, onAnswer, submitting }) {
             ))}
           </div>
         ) : (
-          <div className="text-center text-sm py-3" style={{ color: 'var(--color-surface-light)' }}>
+          <div className="text-center text-sm py-3" style={{ color: 'var(--color-border)' }}>
             Tap the card to see the answer
           </div>
         )}
@@ -331,7 +331,7 @@ function MultipleChoiceQuiz({ quizData, onAnswer, submitting }) {
     if (!revealed) {
       return {
         background: 'var(--color-surface)',
-        borderColor: 'var(--color-surface-light)',
+        borderColor: 'var(--color-border)',
         color: 'var(--color-text)',
       };
     }
@@ -351,7 +351,7 @@ function MultipleChoiceQuiz({ quizData, onAnswer, submitting }) {
     }
     return {
       background: 'var(--color-surface)',
-      borderColor: 'var(--color-surface-light)',
+      borderColor: 'var(--color-border)',
       color: 'var(--color-text-dim)',
       opacity: 0.4,
     };
@@ -412,7 +412,7 @@ function MultipleChoiceQuiz({ quizData, onAnswer, submitting }) {
       </div>
 
       <div className="px-4 pb-6 pt-2 flex-shrink-0">
-        <div className="text-center text-sm py-3" style={{ color: 'var(--color-surface-light)' }}>
+        <div className="text-center text-sm py-3" style={{ color: 'var(--color-border)' }}>
           {revealed
             ? (choices[selected]?.is_correct ? 'Correct!' : 'Wrong — check the answer above')
             : 'Select the correct answer'}
@@ -552,7 +552,7 @@ function TypingQuiz({ quizData, onAnswer, submitting }) {
       </div>
 
       <div className="px-4 pb-6 pt-2 flex-shrink-0">
-        <div className="text-center text-sm py-3" style={{ color: 'var(--color-surface-light)' }}>
+        <div className="text-center text-sm py-3" style={{ color: 'var(--color-border)' }}>
           {result
             ? (result.is_correct ? 'Moving on...' : `The answer was "${result.correct_answer}"`)
             : 'Type the English word and press Check'}

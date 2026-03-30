@@ -23,7 +23,7 @@ function Nav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 flex justify-around py-2.5 px-1 z-50"
-         style={{ background: 'var(--color-surface)', borderTop: '1px solid var(--color-surface-light)' }}>
+         style={{ background: 'var(--color-surface)', borderTop: '1px solid var(--color-border)' }}>
       {tabs.map(t => (
         <Link key={t.path} to={t.path}
               className="flex flex-col items-center gap-0.5 text-xs no-underline transition-colors"

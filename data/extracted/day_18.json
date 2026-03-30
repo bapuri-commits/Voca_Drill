@@ -1,0 +1,1556 @@
+{
+  "day": "Day 18",
+  "word_count": 55,
+  "words": [
+    {
+      "word_order": 1,
+      "english": "initiative",
+      "pronunciation": "[inítʃiətiv]",
+      "frequency": 3,
+      "derivatives": [
+        {
+          "pos": "v.",
+          "word": "initiate"
+        }
+      ],
+      "exam_tip": "initiative는 'initiative to raise money(돈을 모으려고 하는 계획)'에서처럼 '계획'이라는 뜻으로도 많이 쓰인다. 동의어로는 plan, scheme이 출제될 수 있으니 함께 알아두도록 하자.",
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "n.",
+          "korean": "진취성",
+          "tested_synonyms": [
+            "enterprise",
+            "ambition",
+            "drive"
+          ],
+          "important_synonyms": [],
+          "example_en": "People expect leaders to show great initiative when faced with a crisis.",
+          "example_ko": "사람들은 위기 상황에 직면했을 때 지도자들이 큰 진취성을 보여주기를 기대한다."
+        }
+      ]
+    },
+    {
+      "word_order": 2,
+      "english": "provided that",
+      "pronunciation": null,
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "phr.",
+          "korean": "만약 ~이라면",
+          "tested_synonyms": [
+            "if",
+            "once",
+            "on the condition that",
+            "supposing"
+          ],
+          "important_synonyms": [],
+          "example_en": "Lila could watch two hours of television provided that she finished her homework first.",
+          "example_ko": "만약 Lila가 숙제를 먼저 끝낸다면 텔레비전을 2시간 동안 볼 수 있었다."
+        }
+      ]
+    },
+    {
+      "word_order": 3,
+      "english": "phenomenal",
+      "pronunciation": "[finάmənl]",
+      "frequency": 3,
+      "derivatives": [
+        {
+          "pos": "n.",
+          "word": "phenomenon"
+        }
+      ],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "경이적인",
+          "tested_synonyms": [
+            "extraordinary",
+            "remarkable"
+          ],
+          "important_synonyms": [],
+          "example_en": "The discovery of the electron was a phenomenal advance in physics.",
+          "example_ko": "전자의 발견은 물리학에서 경이적인 진전이었다."
+        }
+      ]
+    },
+    {
+      "word_order": 4,
+      "english": "likewise",
+      "pronunciation": "[làikwáiz]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adv.",
+          "korean": "마찬가지로, 똑같이",
+          "tested_synonyms": [
+            "similarly",
+            "in the same way"
+          ],
+          "important_synonyms": [],
+          "example_en": "France has signed the environmental agreement, and Germany is expected to do likewise.",
+          "example_ko": "프랑스는 환경 협정에 서명하였고, 똑같은 마찬가지로 서명할 것으로 예상된다."
+        },
+        {
+          "order": 2,
+          "part_of_speech": "adv.",
+          "korean": "또한",
+          "tested_synonyms": [
+            "also",
+            "as well"
+          ],
+          "important_synonyms": [],
+          "example_en": "Sarah nearly failed chemistry and she likewise struggled to pass biology.",
+          "example_ko": "Sarah는 화학에서 거의 낙제했고, 생물학 또한 통과하기 위해 고군분투했다."
+        }
+      ]
+    },
+    {
+      "word_order": 5,
+      "english": "tangible",
+      "pronunciation": "[tǽndʒəbl]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "유형의, 실재하는",
+          "tested_synonyms": [
+            "material",
+            "physical",
+            "concrete",
+            "substantial"
+          ],
+          "important_synonyms": [],
+          "example_en": "Tangible assets, such as equipment and land, have a physical form.",
+          "example_ko": "용품이나 토지와 같은 유형 자산들은 실제 형태가 있다."
+        }
+      ]
+    },
+    {
+      "word_order": 6,
+      "english": "absurd",
+      "pronunciation": "[æbsə́ːrd]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "터무니없는",
+          "tested_synonyms": [
+            "ridiculous",
+            "preposterous",
+            "ludicrous"
+          ],
+          "important_synonyms": [],
+          "example_en": "Claims about the existence of UFOs seem absurd to many people.",
+          "example_ko": "UFO의 존재에 대한 주장들은 많은 사람들에게 터무니없이 보인다."
+        }
+      ]
+    },
+    {
+      "word_order": 7,
+      "english": "inclement",
+      "pronunciation": "[inklément]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": "inclement와 철자가 비슷한 increment는 '증가(increase, gain)'라는 뜻이므로 시험에서 혼동하지 않도록 주의하자.",
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "(날씨가) 흉륜한",
+          "tested_synonyms": [
+            "unfavorable",
+            "harsh",
+            "severe"
+          ],
+          "important_synonyms": [],
+          "example_en": "Bears hibernate in winter to cope with limited food and to avoid inclement weather.",
+          "example_ko": "곰은 제한된 식량에 대처하고 흉륜한 날씨를 피하기 위해 겨울에 동면한다."
+        }
+      ]
+    },
+    {
+      "word_order": 8,
+      "english": "overly",
+      "pronunciation": "[óuvərli]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adv.",
+          "korean": "지나치게",
+          "tested_synonyms": [
+            "excessively",
+            "inordinately",
+            "unduly"
+          ],
+          "important_synonyms": [],
+          "example_en": "If children have everything done for them by their parents, they may become overly dependent.",
+          "example_ko": "만약 부모가 모든 것을 해 준다면, 아이들은 지나치게 의존적이 될 수도 있다."
+        }
+      ]
+    },
+    {
+      "word_order": 9,
+      "english": "consume",
+      "pronunciation": "[kənsúːm]",
+      "frequency": 3,
+      "derivatives": [
+        {
+          "pos": "n.",
+          "word": "consumption"
+        }
+      ],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "v.",
+          "korean": "소비하다",
+          "tested_synonyms": [
+            "expend",
+            "use up",
+            "completely use",
+            "exhaust"
+          ],
+          "important_synonyms": [],
+          "example_en": "The people next door consume a lot of electricity in heating their home.",
+          "example_ko": "옆집 사람들은 집을 난방하는 데 많은 전력을 소비한다."
+        },
+        {
+          "order": 2,
+          "part_of_speech": "v.",
+          "korean": "소멸시키다",
+          "tested_synonyms": [
+            "destroy",
+            "devastate",
+            "demolish"
+          ],
+          "important_synonyms": [],
+          "example_en": "The forest fire was so great that it consumed everything in its path.",
+          "example_ko": "그 산불은 매우 엄청나서 지나가는 길에 있는 모든 것을 소멸시켰다."
+        },
+        {
+          "order": 3,
+          "part_of_speech": "v.",
+          "korean": "먹다",
+          "tested_synonyms": [
+            "eat",
+            "devour"
+          ],
+          "important_synonyms": [],
+          "example_en": "Maggots are sometimes used to clean out wounds as they only consume dead tissue.",
+          "example_ko": "구더기들은 죽은 조직들만 먹기 때문에, 그것들은 가끔 상처를 깨끗이 하는 데 쓰인다."
+        }
+      ]
+    },
+    {
+      "word_order": 10,
+      "english": "overall",
+      "pronunciation": "[óuvərɔ̀ːl]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "전반적인",
+          "tested_synonyms": [
+            "general",
+            "total",
+            "comprehensive"
+          ],
+          "important_synonyms": [],
+          "example_en": "The violinist made a couple mistakes, but the overall performance of the piece was good.",
+          "example_ko": "그 바이올린 연주자는 두어 번의 실수를 했지만, 그 작품의 전반적인 연주는 훌륭했다."
+        }
+      ]
+    },
+    {
+      "word_order": 11,
+      "english": "promote",
+      "pronunciation": "[prəmóut]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "v.",
+          "korean": "촉진하다",
+          "tested_synonyms": [
+            "encourage",
+            "advance",
+            "further",
+            "forward"
+          ],
+          "important_synonyms": [],
+          "example_en": "There was a meeting to promote trade between China and the US.",
+          "example_ko": "중국과 미국 간의 교역을 촉진하기 위한 회의가 있었다."
+        }
+      ]
+    },
+    {
+      "word_order": 12,
+      "english": "proliferation",
+      "pronunciation": "[prəlìfəréiʃən]",
+      "frequency": 3,
+      "derivatives": [
+        {
+          "pos": "v.",
+          "word": "proliferate"
+        }
+      ],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "n.",
+          "korean": "급증",
+          "tested_synonyms": [
+            "increase",
+            "growth",
+            "multiplication"
+          ],
+          "important_synonyms": [],
+          "example_en": "The proliferation of invasive plant species sometimes harms native vegetation.",
+          "example_ko": "침입성 식물 종의 급증은 때때로 토종 식물에 해가 된다."
+        }
+      ]
+    },
+    {
+      "word_order": 13,
+      "english": "copious",
+      "pronunciation": "[kóupiəs]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "풍부한",
+          "tested_synonyms": [
+            "plentiful",
+            "abundant",
+            "ample",
+            "bountiful"
+          ],
+          "important_synonyms": [],
+          "example_en": "The copious rainfall in the winter allowed the farmers to irrigate their crops all year.",
+          "example_ko": "겨울의 풍부한 강우량은 농부들이 일 년 내내 작물에 물을 댈 수 있게 해주었다."
+        }
+      ]
+    },
+    {
+      "word_order": 14,
+      "english": "negligible",
+      "pronunciation": "[néglidʒəbl]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "사소한",
+          "tested_synonyms": [
+            "insignificant",
+            "slight",
+            "minor",
+            "trivial"
+          ],
+          "important_synonyms": [],
+          "example_en": "Carbon dioxide has a negligible effect on ozone depletion.",
+          "example_ko": "이산화탄소는 오존층의 감소에 사소한 영향을 미친다."
+        }
+      ]
+    },
+    {
+      "word_order": 15,
+      "english": "notably",
+      "pronunciation": "[nóutəbli]",
+      "frequency": 3,
+      "derivatives": [
+        {
+          "pos": "adj.",
+          "word": "notable"
+        }
+      ],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adv.",
+          "korean": "특히",
+          "tested_synonyms": [
+            "particularly",
+            "especially",
+            "in particular"
+          ],
+          "important_synonyms": [],
+          "example_en": "Notably, many women writers in the 1800s used pen names.",
+          "example_ko": "특히, 1800년대의 많은 여류 작가들이 필명을 사용했다."
+        }
+      ]
+    },
+    {
+      "word_order": 16,
+      "english": "inhibit",
+      "pronunciation": "[inhíbit]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": "inhibit과 철자가 비슷한 inhabit은 '거주하다(live, dwell in)'라는 뜻이므로 시험에서 혼동하지 않도록 주의하자.",
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "v.",
+          "korean": "금지하다",
+          "tested_synonyms": [
+            "hinder",
+            "restrict",
+            "limit",
+            "restrain",
+            "ban",
+            "prohibit",
+            "forbid"
+          ],
+          "important_synonyms": [],
+          "example_en": "The law inhibits the use of pesticides on properties next to large bodies of water.",
+          "example_ko": "그 법은 큰 수역 옆에 위치한 토지에서 살충제를 사용하는 것을 금지한다."
+        }
+      ]
+    },
+    {
+      "word_order": 17,
+      "english": "worshiper",
+      "pronunciation": "[wə́ːrʃipər]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "n.",
+          "korean": "예배자",
+          "tested_synonyms": [
+            "people participating in a religious service"
+          ],
+          "important_synonyms": [],
+          "example_en": "In Buddhism, worshipers often bow in front of a statue of Buddha.",
+          "example_ko": "불교에서는 예배자들이 종종 불상 앞에서 절을 한다."
+        }
+      ]
+    },
+    {
+      "word_order": 18,
+      "english": "pool",
+      "pronunciation": "[puːl]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "v.",
+          "korean": "모으다",
+          "tested_synonyms": [
+            "combine",
+            "put together"
+          ],
+          "important_synonyms": [],
+          "example_en": "Members of the community pooled their resources to purchase land for a park.",
+          "example_ko": "공동체의 구성원들은 공원을 위한 토지를 매입하기 위해 그들의 자산을 모았다."
+        },
+        {
+          "order": 2,
+          "part_of_speech": "n.",
+          "korean": "기원, 연합",
+          "tested_synonyms": [
+            "combination",
+            "group"
+          ],
+          "important_synonyms": [],
+          "example_en": "A pool of journalists from various international newspapers gathered in the conference room for the announcement.",
+          "example_ko": "다양한 국제 신문사 기자들의 연합이 발표를 위해 회의실에 모였다."
+        }
+      ]
+    },
+    {
+      "word_order": 19,
+      "english": "at the urging of",
+      "pronunciation": null,
+      "frequency": 2,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "phr.",
+          "korean": "~의 권고로",
+          "tested_synonyms": [
+            "at the recommendation of"
+          ],
+          "important_synonyms": [],
+          "example_en": "At the urging of world leaders, many governments are attempting to stop the development of nuclear weapons.",
+          "example_ko": "세계 지도자들의 권고로 많은 정부들이 핵무기의 개발을 멈추려고 시도하고 있다."
+        }
+      ]
+    },
+    {
+      "word_order": 20,
+      "english": "ornamental",
+      "pronunciation": "[ɔ̀ːrnaméntl]",
+      "frequency": 3,
+      "derivatives": [
+        {
+          "pos": "v.",
+          "word": "ornament"
+        }
+      ],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "장식용의",
+          "tested_synonyms": [
+            "decorative",
+            "beautifying",
+            "embellishing"
+          ],
+          "important_synonyms": [],
+          "example_en": "The Alhambra Palace in Spain is surrounded by ornamental gardens that enhance the palace's beauty.",
+          "example_ko": "스페인의 알함브라 궁전은 궁전의 아름다움을 돋보이게 하는 장식용 정원으로 둘러싸여 있다."
+        }
+      ]
+    },
+    {
+      "word_order": 21,
+      "english": "regime",
+      "pronunciation": "[rəʒíːm]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "n.",
+          "korean": "정권, 체제",
+          "tested_synonyms": [
+            "government",
+            "administration",
+            "authorities"
+          ],
+          "important_synonyms": [],
+          "example_en": "A new regime took power after the successful military coup.",
+          "example_ko": "새 정권은 성공적인 군사 쿠데타 후에 권력을 잡았다."
+        }
+      ]
+    },
+    {
+      "word_order": 22,
+      "english": "acclaim",
+      "pronunciation": "[əkléim]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": "acclaim과 함께 다음의 단어들을 구별하여 알아두도록 하자. • reclaim '되찾다' • declaim '격렬하게 비난하다'",
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "v.",
+          "korean": "격찬하다",
+          "tested_synonyms": [
+            "praise",
+            "compliment",
+            "applaud"
+          ],
+          "important_synonyms": [],
+          "example_en": "Critics acclaimed the actress for her superb performance in the hit Broadway play.",
+          "example_ko": "비평가들은 인기 브로드웨이 연극에서 눈부신 연기를 한 그 여배우를 격찬했다."
+        }
+      ]
+    },
+    {
+      "word_order": 23,
+      "english": "comprehensible",
+      "pronunciation": "[kὰmprihénsəbl]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "이해할 수 있는",
+          "tested_synonyms": [
+            "understandable",
+            "apprehensible",
+            "knowable"
+          ],
+          "important_synonyms": [],
+          "example_en": "Experience taught Rachel that life could be predictable and comprehensible.",
+          "example_ko": "경험은 Rachel에게 삶은 예측할 수 있고 이해할 수 있다는 것을 가르쳐 주었다."
+        }
+      ]
+    },
+    {
+      "word_order": 24,
+      "english": "disparity",
+      "pronunciation": "[dispǽrəti]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "n.",
+          "korean": "차이, 불균형",
+          "tested_synonyms": [
+            "inequality",
+            "imbalance",
+            "disproportion"
+          ],
+          "important_synonyms": [],
+          "example_en": "The pay disparity between men and women has been slowly decreasing over time.",
+          "example_ko": "남성과 여성 사이의 임금 불균형은 시간이 지나면서 서서히 줄어들어 왔다."
+        }
+      ]
+    },
+    {
+      "word_order": 25,
+      "english": "bold",
+      "pronunciation": "[bould]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": "bold는 'the painting's bold color(그 그림의 선명한 색)'에서처럼 '선명한'이라는 뜻으로도 많이 쓰인다. 동의어로는 vivid, bright가 출제될 수 있으니 함께 알아두도록 하자.",
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "용감한",
+          "tested_synonyms": [
+            "daring",
+            "brave",
+            "courageous"
+          ],
+          "important_synonyms": [],
+          "example_en": "Despite Nancy's bold words, there was a cold terror in her eyes as she confronted the intruder.",
+          "example_ko": "Nancy의 용감한 말에도 불구하고, 침입자와 대치한 그녀의 눈에는 차가운 공포가 서려 있었다."
+        }
+      ]
+    },
+    {
+      "word_order": 26,
+      "english": "noteworthy",
+      "pronunciation": "[nóutwə̀ːrði]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "주목할 만한",
+          "tested_synonyms": [
+            "important",
+            "notable",
+            "significant"
+          ],
+          "important_synonyms": [],
+          "example_en": "The Lumière brothers were noteworthy pioneers in early film.",
+          "example_ko": "뤼미에르 형제는 초기 영화의 주목할 만한 선구자들이었다."
+        }
+      ]
+    },
+    {
+      "word_order": 27,
+      "english": "spectacular",
+      "pronunciation": "[spektǽkjulər]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "장관인, 눈부신",
+          "tested_synonyms": [
+            "magnificent",
+            "splendid",
+            "impressive"
+          ],
+          "important_synonyms": [],
+          "example_en": "Each room in the hotel had a spectacular view of the ocean.",
+          "example_ko": "호텔의 각 방에서는 바다의 눈부신 광경을 볼 수 있었다."
+        }
+      ]
+    },
+    {
+      "word_order": 28,
+      "english": "extracted from",
+      "pronunciation": null,
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "phr.",
+          "korean": "~에서 뽑아낸",
+          "tested_synonyms": [
+            "taken out of",
+            "drawn out of"
+          ],
+          "important_synonyms": [],
+          "example_en": "The oils extracted from olives or sesame seeds have low smoke points.",
+          "example_ko": "올리브나 참깨에서 뽑아낸 기름은 발연점이 낮다."
+        }
+      ]
+    },
+    {
+      "word_order": 29,
+      "english": "tantalize",
+      "pronunciation": "[tǽntəlàiz]",
+      "frequency": 2,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "v.",
+          "korean": "애타게 하다",
+          "tested_synonyms": [
+            "tempt"
+          ],
+          "important_synonyms": [],
+          "example_en": "Lotteries tantalize people with the prospect of getting rich quickly.",
+          "example_ko": "복권은 빨리 부자가 되려는 기대에 차 있는 사람들을 애타게 한다."
+        }
+      ]
+    },
+    {
+      "word_order": 30,
+      "english": "allied",
+      "pronunciation": "[əláid]",
+      "frequency": 2,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "관련된",
+          "tested_synonyms": [
+            "related",
+            "linked",
+            "connected"
+          ],
+          "important_synonyms": [],
+          "example_en": "Depression and anxiety are two closely allied mental health issues.",
+          "example_ko": "우울증과 불안은 밀접하게 관련된 두 가지 정신 건강 문제이다."
+        }
+      ]
+    },
+    {
+      "word_order": 31,
+      "english": "authoritative",
+      "pronunciation": "[əθɔ́ːrətèitiv]",
+      "frequency": 3,
+      "derivatives": [
+        {
+          "pos": "n.",
+          "word": "authority"
+        }
+      ],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "권위 있는, 믿을 만한",
+          "tested_synonyms": [
+            "official",
+            "authorized"
+          ],
+          "important_synonyms": [],
+          "example_en": "The science magazine will not publish an article unless it cites authoritative sources.",
+          "example_ko": "그 과학 잡지는 믿을 만한 출처를 인용하지 않는 한 기사를 싣지 않을 것이다."
+        }
+      ]
+    },
+    {
+      "word_order": 32,
+      "english": "moral",
+      "pronunciation": "[mɔ́ːrəl]",
+      "frequency": 2,
+      "derivatives": [],
+      "exam_tip": "moral과 철자가 비슷한 morale은 '사기, 의욕(spirit, confidence)'이라는 뜻이므로 시험에서 혼동하지 않도록 주의하자.",
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "n.",
+          "korean": "교훈",
+          "tested_synonyms": [
+            "lesson",
+            "message",
+            "teaching"
+          ],
+          "important_synonyms": [],
+          "example_en": "Aesop's fables generally contain an important moral in each story.",
+          "example_ko": "이솝 우화는 대체로 각 이야기마다 중요한 교훈을 담고 있다."
+        }
+      ]
+    },
+    {
+      "word_order": 33,
+      "english": "compatible",
+      "pronunciation": "[kəmpǽtəbl]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "일치하는, 양립할 수 있는",
+          "tested_synonyms": [
+            "consistent",
+            "congruous",
+            "consonant"
+          ],
+          "important_synonyms": [],
+          "example_en": "NGOs must make certain that the projects they fund are compatible with their core values.",
+          "example_ko": "비정부기구는 그들이 자금을 대는 프로젝트가 그들의 핵심 가치와 일치하는지를 확실히 해야만 한다."
+        }
+      ]
+    },
+    {
+      "word_order": 34,
+      "english": "buildup",
+      "pronunciation": "[bíldʌ̀p]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "n.",
+          "korean": "축적",
+          "tested_synonyms": [
+            "accumulation"
+          ],
+          "important_synonyms": [],
+          "example_en": "The buildup of cholesterol in the body can lead to high blood pressure.",
+          "example_ko": "체내의 콜레스테롤 축적은 고혈압으로 이어질 수 있다."
+        }
+      ]
+    },
+    {
+      "word_order": 35,
+      "english": "stress",
+      "pronunciation": "[stres]",
+      "frequency": 2,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "v.",
+          "korean": "강조하다",
+          "tested_synonyms": [
+            "emphasize",
+            "highlight",
+            "underline"
+          ],
+          "important_synonyms": [],
+          "example_en": "All his life, Michael's parents had stressed the importance of education.",
+          "example_ko": "Michael의 일생 동안 그의 부모님은 교육의 중요성을 강조했다."
+        },
+        {
+          "order": 2,
+          "part_of_speech": "n.",
+          "korean": "중점, 강조",
+          "tested_synonyms": [
+            "emphasis",
+            "accent"
+          ],
+          "important_synonyms": [],
+          "example_en": "Hippocrates laid more stress upon the expected outcome of a disease than upon its diagnosis.",
+          "example_ko": "히포크라테스는 질병에 대한 진단보다는 그 질병의 예상되는 결과에 더 중점을 두었다."
+        }
+      ]
+    },
+    {
+      "word_order": 36,
+      "english": "respective",
+      "pronunciation": "[rispéktiv]",
+      "frequency": 2,
+      "derivatives": [
+        {
+          "pos": "adv.",
+          "word": "respectively"
+        }
+      ],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "각각의, 개별적인",
+          "tested_synonyms": [
+            "particular",
+            "individual"
+          ],
+          "important_synonyms": [],
+          "example_en": "Each respective museum in the city specializes in a different art form or period.",
+          "example_ko": "도시에 있는 각각의 박물관들은 다른 예술 유형이나 다른 시대의 미술품들을 전문적으로 다룬다."
+        }
+      ]
+    },
+    {
+      "word_order": 37,
+      "english": "peculiarity",
+      "pronunciation": "[pikjùːliǽrəti]",
+      "frequency": 2,
+      "derivatives": [
+        {
+          "pos": "adj.",
+          "word": "peculiar"
+        }
+      ],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "n.",
+          "korean": "(기이한) 특징, 특성",
+          "tested_synonyms": [
+            "feature",
+            "characteristic",
+            "quality"
+          ],
+          "important_synonyms": [],
+          "example_en": "A need for privacy is a cultural peculiarity in Western society.",
+          "example_ko": "사생활에 대한 욕구는 서구 사회의 문화적 특징이다."
+        }
+      ]
+    },
+    {
+      "word_order": 38,
+      "english": "rely upon",
+      "pronunciation": null,
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "phr.",
+          "korean": "~에 의존하다",
+          "tested_synonyms": [
+            "depend upon",
+            "resort to"
+          ],
+          "important_synonyms": [],
+          "example_en": "Prosecutors must rely upon testimony when little physical evidence is available.",
+          "example_ko": "물리적 증거를 거의 구할 수 없을 때 검사는 증언에 의존해야 한다."
+        }
+      ]
+    },
+    {
+      "word_order": 39,
+      "english": "rapid",
+      "pronunciation": "[rǽpid]",
+      "frequency": 2,
+      "derivatives": [
+        {
+          "pos": "adv.",
+          "word": "rapidly"
+        }
+      ],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "빠른",
+          "tested_synonyms": [
+            "fast",
+            "quick",
+            "speedy",
+            "swift"
+          ],
+          "important_synonyms": [],
+          "example_en": "Rapid environmental change can be a challenge to the survival of species.",
+          "example_ko": "빠른 환경 변화는 종의 생존에 대한 도전이 될 수 있다."
+        }
+      ]
+    },
+    {
+      "word_order": 40,
+      "english": "saturate",
+      "pronunciation": "[sǽtʃəréit]",
+      "frequency": 2,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "v.",
+          "korean": "흠뻑 적시다",
+          "tested_synonyms": [
+            "soak",
+            "drench",
+            "wet thoroughly"
+          ],
+          "important_synonyms": [],
+          "example_en": "Saturate the cloth in cleaning fluid before wiping down the windows.",
+          "example_ko": "창문을 구석구석 닦기 전에 천을 세정액에 흠뻑 적셔라."
+        }
+      ]
+    },
+    {
+      "word_order": 41,
+      "english": "constitution",
+      "pronunciation": "[kὰnstətjúːʃən]",
+      "frequency": 3,
+      "derivatives": [
+        {
+          "pos": "v.",
+          "word": "constitute"
+        },
+        {
+          "pos": "adj.",
+          "word": "constituent"
+        }
+      ],
+      "exam_tip": "constitution은 'amend a constitution(헌법을 개정하다)'에서처럼 '헌법'이라는 뜻으로도 많이 쓰인다. 동의어로는 laws, charter가 출제될 수 있으니 함께 알아두도록 하자.",
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "n.",
+          "korean": "구성, 구조",
+          "tested_synonyms": [
+            "form",
+            "structure"
+          ],
+          "important_synonyms": [],
+          "example_en": "In chemistry, compounds that have a similar constitution are called analogues.",
+          "example_ko": "화학에서 유사한 구조를 가진 화합물들은 유사체라고 불린다."
+        }
+      ]
+    },
+    {
+      "word_order": 42,
+      "english": "efface",
+      "pronunciation": "[iféis]",
+      "frequency": 2,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "v.",
+          "korean": "지우다, 없애다",
+          "tested_synonyms": [
+            "wipe out",
+            "erase",
+            "expunge"
+          ],
+          "important_synonyms": [],
+          "example_en": "Victims of traumatic incidents often wish they could efface their memories of the event.",
+          "example_ko": "충격적인 사건의 피해자들은 보통 그 사건에 대한 기억을 지우고 싶어한다."
+        }
+      ]
+    },
+    {
+      "word_order": 43,
+      "english": "manageable",
+      "pronunciation": "[mǽnidʒəbl]",
+      "frequency": 2,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "관리하기 쉬운",
+          "tested_synonyms": [
+            "controllable",
+            "affordable",
+            "easy to handle"
+          ],
+          "important_synonyms": [],
+          "example_en": "Wild horses must go through substantial training before they become manageable.",
+          "example_ko": "야생마들은 관리하기 쉬워지기까지 상당한 훈련을 받아야 한다."
+        }
+      ]
+    },
+    {
+      "word_order": 44,
+      "english": "approach",
+      "pronunciation": "[əpróutʃ]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "v.",
+          "korean": "접근하다",
+          "tested_synonyms": [
+            "come close",
+            "move toward",
+            "come toward",
+            "near",
+            "reach"
+          ],
+          "important_synonyms": [],
+          "example_en": "Parents should teach their children what to do when a stranger approaches.",
+          "example_ko": "부모들은 아이들에게 낯선 사람이 접근하면 어떻게 해야 하는지 가르쳐 주어야 한다."
+        },
+        {
+          "order": 2,
+          "part_of_speech": "n.",
+          "korean": "접근법",
+          "tested_synonyms": [
+            "method",
+            "way"
+          ],
+          "important_synonyms": [],
+          "example_en": "In the world of mass production, Henry Ford's approach became the industry standard for many years.",
+          "example_ko": "대량 생산의 세계에서는 헨리 포드의 접근법이 오랜 기간 동안 업계의 기준이 되었다."
+        }
+      ]
+    },
+    {
+      "word_order": 45,
+      "english": "routinely",
+      "pronunciation": "[ruːtíːnli]",
+      "frequency": 3,
+      "derivatives": [
+        {
+          "pos": "adj.",
+          "word": "routine"
+        }
+      ],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adv.",
+          "korean": "일상적으로",
+          "tested_synonyms": [
+            "commonly",
+            "regularly",
+            "habitually"
+          ],
+          "important_synonyms": [],
+          "example_en": "Mr. Smith routinely forgot to turn off the lights when he went out.",
+          "example_ko": "Smith씨는 외출할 때 불을 끄는 것을 일상적으로 잊어버렸다."
+        }
+      ]
+    },
+    {
+      "word_order": 46,
+      "english": "adapt",
+      "pronunciation": "[ədǽpt]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "v.",
+          "korean": "적응하다",
+          "tested_synonyms": [
+            "adjust",
+            "acclimate",
+            "conform"
+          ],
+          "important_synonyms": [],
+          "example_en": "Vicky adapted to the new school quite easily.",
+          "example_ko": "Vicky는 새 학교에 상당히 쉽게 적응했다."
+        }
+      ]
+    },
+    {
+      "word_order": 47,
+      "english": "implication",
+      "pronunciation": "[ìmplikéiʃən]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": "implication은 'an implication about the future(미래에 관한 암시)'에서처럼 '암시, 함축'이라는 뜻으로도 많이 쓰인다. 동의어로는 inference, intimation이 출제될 수 있으니 함께 알아두도록 하자.",
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "n.",
+          "korean": "결과",
+          "tested_synonyms": [
+            "consequence",
+            "result"
+          ],
+          "important_synonyms": [],
+          "example_en": "The program has been designed to teach prisoners the implications of bad behavior.",
+          "example_ko": "그 프로그램은 재소자들에게 나쁜 행동의 결과를 가르치도록 고안되었다."
+        }
+      ]
+    },
+    {
+      "word_order": 48,
+      "english": "unambiguous",
+      "pronunciation": "[ʌ̀næmbígjuəs]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "분명한",
+          "tested_synonyms": [
+            "clear",
+            "distinct",
+            "definite"
+          ],
+          "important_synonyms": [],
+          "example_en": "John's attitude about lying was unambiguous—he insisted upon the truth at all times.",
+          "example_ko": "거짓말 하는 것에 대한 John의 태도는 분명했다. 그는 언제나 진실을 고집했다."
+        }
+      ]
+    },
+    {
+      "word_order": 49,
+      "english": "rigor",
+      "pronunciation": "[rígər]",
+      "frequency": 2,
+      "derivatives": [
+        {
+          "pos": "adj.",
+          "word": "rigorous"
+        }
+      ],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "n.",
+          "korean": "엄격함",
+          "tested_synonyms": [
+            "harshness",
+            "strictness",
+            "rigidness"
+          ],
+          "important_synonyms": [],
+          "example_en": "A strict ruler, Roman emperor Septimius Severus applied the law with rigor.",
+          "example_ko": "엄한 통치자였던 로마 황제 셉티미우스 세베루스는 엄격함을 가지고 법을 적용했다."
+        },
+        {
+          "order": 2,
+          "part_of_speech": "n.",
+          "korean": "고초, 어려움",
+          "tested_synonyms": [
+            "hardship",
+            "adversity"
+          ],
+          "important_synonyms": [],
+          "example_en": "Soldiers are often traumatized by the rigors of war.",
+          "example_ko": "군인들은 전쟁의 고초 때문에 종종 정신적 충격을 받는다."
+        }
+      ]
+    },
+    {
+      "word_order": 50,
+      "english": "contentious",
+      "pronunciation": "[kənténʃəs]",
+      "frequency": 3,
+      "derivatives": [
+        {
+          "pos": "v.",
+          "word": "contend"
+        },
+        {
+          "pos": "n.",
+          "word": "contention"
+        }
+      ],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "논쟁을 불러일으키는",
+          "tested_synonyms": [
+            "disputed",
+            "controversial",
+            "argumentative"
+          ],
+          "important_synonyms": [],
+          "example_en": "The death penalty is a contentious issue for many people today.",
+          "example_ko": "사형 제도는 오늘날 많은 사람들에게 논쟁을 불러일으키는 주제이다."
+        }
+      ]
+    },
+    {
+      "word_order": 51,
+      "english": "competent",
+      "pronunciation": "[kάmpətənt]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": "competent는 'competent skills for the job(그 일을 하기 위한 충분한 기량)'에서처럼 '충분한' 이라는 뜻으로도 많이 쓰인다. 동의어로는 sufficient, adequate가 출제될 수 있으니 함께 알아두도록 하자.",
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "유능한",
+          "tested_synonyms": [
+            "adept",
+            "skilled",
+            "capable"
+          ],
+          "important_synonyms": [],
+          "example_en": "A competent accountant can help a company minimize its tax burden.",
+          "example_ko": "유능한 회계사는 회사가 세금 부담을 최소화하는 데 도움을 줄 수 있다."
+        }
+      ]
+    },
+    {
+      "word_order": 52,
+      "english": "incredible",
+      "pronunciation": "[inkrédəbl]",
+      "frequency": 3,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "믿기 힘든",
+          "tested_synonyms": [
+            "unbelievable",
+            "inconceivable",
+            "unimaginable"
+          ],
+          "important_synonyms": [],
+          "example_en": "Larry's claim that he could run a mile in under three minutes was incredible.",
+          "example_ko": "자신이 3분 안에 1마일을 뛸 수 있다는 Larry의 주장은 믿기 힘들었다."
+        }
+      ]
+    },
+    {
+      "word_order": 53,
+      "english": "string",
+      "pronunciation": "[striŋ]",
+      "frequency": 2,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "n.",
+          "korean": "일련",
+          "tested_synonyms": [
+            "series",
+            "chain"
+          ],
+          "important_synonyms": [],
+          "example_en": "Michael Jackson had a string of hit albums in the 1980s.",
+          "example_ko": "마이클 잭슨은 1980년대에 일련의 히트 앨범들을 냈다."
+        }
+      ]
+    },
+    {
+      "word_order": 54,
+      "english": "decompose",
+      "pronunciation": "[dìːkəmpóuz]",
+      "frequency": 2,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "v.",
+          "korean": "부패하다",
+          "tested_synonyms": [
+            "decay",
+            "rot"
+          ],
+          "important_synonyms": [],
+          "example_en": "Fallen leaves slowly decompose and enrich the soil on the forest floor.",
+          "example_ko": "낙엽은 산림 바닥에서 서서히 부패해서 토양을 비옥하게 한다."
+        }
+      ]
+    },
+    {
+      "word_order": 55,
+      "english": "lateral",
+      "pronunciation": "[lǽtərəl]",
+      "frequency": 2,
+      "derivatives": [],
+      "exam_tip": null,
+      "ocr_note": null,
+      "meanings": [
+        {
+          "order": 1,
+          "part_of_speech": "adj.",
+          "korean": "측면의",
+          "tested_synonyms": [
+            "side"
+          ],
+          "important_synonyms": [],
+          "example_en": "The X-rays provided front and lateral views of the brain.",
+          "example_ko": "그 엑스레이는 뇌의 전면과 측면 사진을 보여주었다."
+        }
+      ]
+    }
+  ],
+  "quiz": {
+    "instruction": "Choose the synonyms.",
+    "questions": [
+      {
+        "number": 1,
+        "word": "regime",
+        "choice_label": "a",
+        "choice_text": "encourage, advance, further",
+        "answer_label": "c"
+      },
+      {
+        "number": 2,
+        "word": "tangible",
+        "choice_label": "b",
+        "choice_text": "decorative, beautifying, embellishing",
+        "answer_label": "i"
+      },
+      {
+        "number": 3,
+        "word": "ornamental",
+        "choice_label": "c",
+        "choice_text": "government, administration, authorities",
+        "answer_label": "b"
+      },
+      {
+        "number": 4,
+        "word": "comprehensible",
+        "choice_label": "d",
+        "choice_text": "daring, brave, courageous",
+        "answer_label": "g"
+      },
+      {
+        "number": 5,
+        "word": "phenomenal",
+        "choice_label": "e",
+        "choice_text": "form, structure",
+        "answer_label": "f"
+      },
+      {
+        "number": 6,
+        "word": "promote",
+        "choice_label": "f",
+        "choice_text": "extraordinary, remarkable",
+        "answer_label": "a"
+      },
+      {
+        "number": 7,
+        "word": "negligible",
+        "choice_label": "g",
+        "choice_text": "understandable, apprehensible, knowable",
+        "answer_label": "h"
+      },
+      {
+        "number": 8,
+        "word": "constitution",
+        "choice_label": "h",
+        "choice_text": "insignificant, slight, minor",
+        "answer_label": "e"
+      },
+      {
+        "number": 9,
+        "word": "adapt",
+        "choice_label": "i",
+        "choice_text": "material, physical, concrete",
+        "answer_label": "j"
+      },
+      {
+        "number": 10,
+        "word": "bold",
+        "choice_label": "j",
+        "choice_text": "adjust, acclimate, conform",
+        "answer_label": "d"
+      }
+    ]
+  }
+}

@@ -35,7 +35,7 @@ export default function Login() {
     setLoading(false);
   };
 
-  const inputBorder = error ? '2px solid var(--color-danger)' : '2px solid transparent';
+  const inputBorder = error ? '2px solid var(--color-danger)' : '1px solid var(--color-border)';
 
   return (
     <div className="fixed inset-0 flex items-center justify-center p-6"

@@ -72,7 +72,7 @@ export default function Stats() {
 
       {/* Daily */}
       {daily && (
-        <div className="rounded-xl p-4 mb-4" style={{ background: 'var(--color-surface)' }}>
+        <div className="rounded-xl p-4 mb-4" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)' }}>
           <h2 className="text-sm font-semibold mb-3" style={{ color: 'var(--color-text-dim)' }}>Today</h2>
           <div className="grid grid-cols-2 gap-3">
             <StatCard label="Words Studied" value={daily.words_studied} />
@@ -87,7 +87,7 @@ export default function Stats() {
 
       {/* Overall Progress */}
       {overall && (
-        <div className="rounded-xl p-4 mb-4" style={{ background: 'var(--color-surface)' }}>
+        <div className="rounded-xl p-4 mb-4" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)' }}>
           <h2 className="text-sm font-semibold mb-3" style={{ color: 'var(--color-text-dim)' }}>
             Overall ({overall.studied_words}/{overall.total_words})
           </h2>
@@ -97,7 +97,7 @@ export default function Stats() {
             {overall.level_distribution.map((lv, i) => (
               <div key={i} className="flex items-center gap-2">
                 <span className="text-xs w-16" style={{ color: LEVEL_COLORS[i] }}>{LEVEL_NAMES[i]}</span>
-                <div className="flex-1 h-3 rounded-full overflow-hidden" style={{ background: 'var(--color-surface-light)' }}>
+                <div className="flex-1 h-3 rounded-full overflow-hidden" style={{ background: 'var(--color-surface-alt)' }}>
                   <div className="h-full rounded-full transition-all"
                        style={{ width: `${lv.percentage}%`, background: LEVEL_COLORS[i] }} />
                 </div>
@@ -116,13 +116,13 @@ export default function Stats() {
 
       {/* Chapter Progress */}
       {overall?.chapter_progress?.length > 0 && (
-        <div className="rounded-xl p-4 mb-4" style={{ background: 'var(--color-surface)' }}>
+        <div className="rounded-xl p-4 mb-4" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)' }}>
           <h2 className="text-sm font-semibold mb-3" style={{ color: 'var(--color-text-dim)' }}>By Chapter</h2>
           <div className="flex flex-col gap-2">
             {overall.chapter_progress.map((ch, i) => (
               <div key={i} className="flex items-center gap-2">
                 <span className="text-xs w-14" style={{ color: 'var(--color-text-dim)' }}>{ch.chapter}</span>
-                <div className="flex-1 h-2.5 rounded-full overflow-hidden" style={{ background: 'var(--color-surface-light)' }}>
+                <div className="flex-1 h-2.5 rounded-full overflow-hidden" style={{ background: 'var(--color-surface-alt)' }}>
                   <div className="h-full rounded-full" style={{ width: `${ch.completion_rate}%`, background: 'var(--color-primary)' }} />
                 </div>
                 <span className="text-xs w-12 text-right" style={{ color: 'var(--color-text-dim)' }}>
@@ -135,13 +135,13 @@ export default function Stats() {
       )}
 
       {/* Data Management */}
-      <div className="rounded-xl p-4" style={{ background: 'var(--color-surface)' }}>
+      <div className="rounded-xl p-4" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)' }}>
         <div className="flex justify-between items-center mb-3">
           <h2 className="text-sm font-semibold" style={{ color: 'var(--color-text-dim)' }}>Data</h2>
           <button
             onClick={loadBackups}
             className="text-xs px-3 py-1 rounded-lg border-none cursor-pointer"
-            style={{ background: 'var(--color-surface-light)', color: 'var(--color-text-dim)' }}
+            style={{ background: 'var(--color-surface-alt)', color: 'var(--color-text-dim)' }}
           >
             {showBackups ? 'Hide' : 'Backup'}
           </button>
@@ -160,7 +160,7 @@ export default function Stats() {
 
             {backupMsg && (
               <div className="text-xs p-2 rounded-lg mb-3"
-                   style={{ background: 'var(--color-surface-light)', color: 'var(--color-text-dim)' }}>
+                   style={{ background: 'var(--color-surface-alt)', color: 'var(--color-text-dim)' }}>
                 {backupMsg}
               </div>
             )}
@@ -173,7 +173,7 @@ export default function Stats() {
               <div className="flex flex-col gap-2">
                 {backups.map(b => (
                   <div key={b.filename} className="flex items-center gap-2 p-2 rounded-lg"
-                       style={{ background: 'var(--color-surface-light)' }}>
+                       style={{ background: 'var(--color-surface-alt)' }}>
                     <div className="flex-1 min-w-0">
                       <div className="text-xs font-semibold truncate">{b.filename}</div>
                       <div className="text-xs" style={{ color: 'var(--color-text-dim)' }}>
@@ -220,7 +220,7 @@ export default function Stats() {
               <button
                 onClick={() => setConfirmRestore(null)}
                 className="flex-1 py-2.5 rounded-xl text-sm border-none cursor-pointer"
-                style={{ background: 'var(--color-surface-light)', color: 'var(--color-text-dim)' }}
+                style={{ background: 'var(--color-surface-alt)', color: 'var(--color-text-dim)' }}
               >
                 Cancel
               </button>
@@ -241,7 +241,7 @@ export default function Stats() {
 
 function StatCard({ label, value }) {
   return (
-    <div className="rounded-lg p-3 text-center" style={{ background: 'var(--color-surface-light)' }}>
+    <div className="rounded-lg p-3 text-center" style={{ background: 'var(--color-surface-alt)' }}>
       <div className="text-xl font-bold">{value}</div>
       <div className="text-xs" style={{ color: 'var(--color-text-dim)' }}>{label}</div>
     </div>

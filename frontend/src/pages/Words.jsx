@@ -35,41 +35,39 @@ export default function Words() {
       <div className="flex flex-col gap-2">
         {words.map(w => (
           <div key={w.id} className="rounded-xl p-3 cursor-pointer transition-colors"
-               style={{ background: 'var(--color-surface)' }}
+               style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)' }}
                onClick={() => setExpanded(expanded === w.id ? null : w.id)}>
             <div className="flex items-center justify-between">
               <div>
-                <span className="font-bold mr-2">{w.english}</span>
-                <span className="text-xs" style={{ color: 'var(--color-text-dim)' }}>
-                  {'*'.repeat(w.frequency)}
+                <span className="font-bold mr-2" style={{ color: 'var(--color-text)' }}>{w.english}</span>
+                <span className="text-xs" style={{ color: 'var(--color-warning)' }}>
+                  {'★'.repeat(w.frequency)}
                 </span>
               </div>
-              <span className="text-xs" style={{ color: 'var(--color-text-dim)' }}>
+              <span className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
                 {w.meanings[0]?.korean}
               </span>
             </div>
 
-            {/* Tested Synonyms Preview */}
             {w.meanings[0]?.tested_synonyms?.length > 0 && (
-              <div className="text-xs mt-1" style={{ color: 'var(--color-primary)' }}>
+              <div className="text-xs mt-1 font-medium" style={{ color: 'var(--color-primary)' }}>
                 {w.meanings[0].tested_synonyms.slice(0, 3).join(', ')}
                 {w.meanings[0].tested_synonyms.length > 3 && ' ...'}
               </div>
             )}
 
-            {/* Expanded Detail */}
             {expanded === w.id && (
-              <div className="mt-3 pt-3" style={{ borderTop: '1px solid var(--color-surface-light)' }}>
+              <div className="mt-3 pt-3" style={{ borderTop: '1px solid var(--color-border)' }}>
                 {w.pronunciation && (
                   <div className="text-xs mb-2" style={{ color: 'var(--color-text-dim)' }}>{w.pronunciation}</div>
                 )}
                 {w.meanings.map((m, i) => (
                   <div key={i} className="mb-3">
-                    <div className="text-xs font-semibold" style={{ color: 'var(--color-text-dim)' }}>
+                    <div className="text-xs font-semibold" style={{ color: 'var(--color-text-secondary)' }}>
                       {m.order}. [{m.part_of_speech}] {m.korean}
                     </div>
                     {m.tested_synonyms?.length > 0 && (
-                      <div className="text-sm mt-0.5" style={{ color: 'var(--color-primary)' }}>
+                      <div className="text-sm mt-0.5 font-medium" style={{ color: 'var(--color-primary)' }}>
                         {m.tested_synonyms.join(', ')}
                       </div>
                     )}
@@ -79,7 +77,7 @@ export default function Words() {
                       </div>
                     )}
                     {m.example_en && (
-                      <div className="text-xs mt-1 italic" style={{ color: 'var(--color-text-dim)' }}>{m.example_en}</div>
+                      <div className="text-xs mt-1 italic" style={{ color: 'var(--color-text-secondary)' }}>{m.example_en}</div>
                     )}
                     {m.example_ko && (
                       <div className="text-xs" style={{ color: 'var(--color-text-dim)' }}>{m.example_ko}</div>
@@ -87,7 +85,7 @@ export default function Words() {
                   </div>
                 ))}
                 {w.exam_tip && (
-                  <div className="p-2 rounded-lg text-xs mt-2" style={{ background: 'var(--color-surface-light)', color: 'var(--color-warning)' }}>
+                  <div className="p-2 rounded-lg text-xs mt-2" style={{ background: 'var(--color-warning-bg)', color: 'var(--color-warning)' }}>
                     {w.exam_tip}
                   </div>
                 )}
@@ -109,10 +107,11 @@ function Chip({ label, active, onClick }) {
   return (
     <button
       onClick={onClick}
-      className="px-3 py-1.5 rounded-full text-xs whitespace-nowrap border-none cursor-pointer transition-colors"
+      className="px-3 py-1.5 rounded-full text-xs whitespace-nowrap border-none cursor-pointer transition-colors font-medium"
       style={{
-        background: active ? 'var(--color-primary)' : 'var(--color-surface-light)',
-        color: active ? '#fff' : 'var(--color-text-dim)',
+        background: active ? 'var(--color-primary)' : 'var(--color-surface-alt)',
+        color: active ? '#fff' : 'var(--color-text-secondary)',
+        border: active ? 'none' : '1px solid var(--color-border)',
       }}
     >
       {label}
